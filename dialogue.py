@@ -40,29 +40,31 @@ class DialogManager(object):
             root = Dialogue.load(f)
         self.position = root
         self.history = []
+        self.event = None
 
-    def getCurrentDialog(self):
+    def getCurrentResponse(self):
         return self.position.response
 
     def getCurrentOptions(self):
         currentOptions = []
         for option in self.position.options:
             currentOptions.append(option.prompt)
+        return currentOptions
 
     def followOption(self, index):
-        self.history.append(current)
-        self.current = self.current.options[index]
+        self.history.append(self.position)
+        self.position = self.position.options[index]
 
-        if self.event != None:
-            self.event()
+        if self.position.event != None:
+            self.position.event()
 
-        return self.current.response
+        return self.position.response
 
     def backUp(self):
         self.current = self.history.pop()
 
-        if self.event != None:
-            self.event()
+        if self.position.event != None:
+            self.position.event()
 
         return self.current.response
 
