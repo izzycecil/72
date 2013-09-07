@@ -1,3 +1,5 @@
+import pygame
+
 def runStack(stack):
     if stack:
         stack[-1].poll()
@@ -14,9 +16,12 @@ def runStack(stack):
 
 
 class StackFrame(object):
-    def __init__(self, stack, window):
+    def __init__(self, stack, window, music=None):
         self.stack  = stack
         self.window = window
+        if music is not None:
+            self.music = pygame.mixer.Sound(music)
+
 
     def poll(self):
         pass
@@ -28,7 +33,12 @@ class StackFrame(object):
         pass
 
     def update(self):
-        pass
+        if hasattr(self, 'music'):
+            try:
+                if not self.channel.get_busy():
+                    self.channel = self.music.play()
+            except AttributeError:
+                self.channel = self.music.play()
         
     def kill(self):
         self.stack.remove(self)
