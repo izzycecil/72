@@ -12,6 +12,7 @@ class Dialogue:
         self.prompt = prompt
         self.response = response
         self.options = []
+        self.registrations = {}
 
     """
     Loads a tree from file, starting with this node as root.

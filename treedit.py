@@ -32,6 +32,9 @@ def help():
     a     Add an option
     d n   Descend to option #n
     r n   Remove option #n
+
+    e s   rEgister this node in tree with handle s
+    u s   Unregister handle s (does not need to be this node)
     
     b     go Back to the previous node
 
@@ -91,6 +94,28 @@ def removeOption(optiondex):
     except ValueError:
         print "Remove failed (bad node number?)"
 functions['r'] = removeOption
+
+def listRegistrations():
+    global root
+    print "REGISTRATIONS:"
+    for handle in root.registrations:
+        printOutput("{}: {}".format(handle, root.registrations[handle].prompt))
+functions['l'] = listRegistrations
+
+def registerNode(handle):
+    global root, current
+    root.registrations[handle] = current
+    print "Registered."
+functions['e'] = registerNode
+
+def unregisterNode(handle):
+    global root
+    try:
+        root.registrations.pop(handle)
+        print "Unregistered."
+    except KeyError:
+        print "No such registration exists."
+functions['u'] = unregisterNode
 
 def goBack():
     global current
