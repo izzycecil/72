@@ -123,18 +123,22 @@ class Creature(Entity):
 
     def moveUp(self, board):
         x,y = self.getUp()
+        self.direction = 'up'
         self.move(x,y,board)
 
     def moveDown(self, board):
         x,y = self.getDown()
+        self.direction = 'down'
         self.move(x,y,board)
 
     def moveLeft(self, board):
         x,y = self.getLeft()
+        self.direction = 'left'
         self.move(x,y,board)
 
     def moveRight(self, board):
         x,y = self.getRight()
+        self.direction = 'right'
         self.move(x,y,board)
 
     def render(self, window):
