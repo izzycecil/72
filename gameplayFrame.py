@@ -85,7 +85,7 @@ if __name__=='__main__':
 
     p = Player(None, None, None, None, None, 4)
     b.placeEntity(p, 3, 4)
-    #b.placeEntity(Creature(None, None, None, None, None), 5,5)
+    b.placeEntity(Creature(None, None, None, None, None, 4), 5,5)
 
     g = GameplayFrame(None, window, b, p)
     
