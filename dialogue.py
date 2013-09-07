@@ -1,6 +1,6 @@
 import pickle
 
-class Dialogue(Object):
+class Dialogue(object):
     """
     Represents a position in the dialogue tree. Can have a 'prompt' which is a
     line of dialogue said by the player that initiates this node. Always has a
@@ -29,7 +29,7 @@ class Dialogue(Object):
         pickle.dump(self,f,2)
         f.close()
 
-class DialogManager(Object):
+class DialogManager(object):
     """
     Wraps a Dialogue tree with convenience functionality intended for use by
     the actual game product.
