@@ -55,10 +55,19 @@ class Creature(Entity):
         self.direction = direction
 
     def move(self, dx, dy, board):
-        board.spaces[self.posX][self.posY].contents = None
-        self.posX += dx
-        self.posY += dy
-        board.spaces[self.posX][self.posY].contents = self
+        destX = self.posX + dx
+        destY = self.posY + dy
+        
+        if destX in range(0, board.xDim) and destY in range(0,board.yDim):
+            dest = board.spaces[destX][destY]
+        else:
+            return
+
+        if dest and not filter(lambda x: not x.passable, dest.contents):
+            board.spaces[self.posX][self.posY].contents.remove(self)
+            self.posX += dx
+            self.posY += dy
+            dest.contents.append(self)
 
     def moveUp(self, board):
         self.move(
@@ -80,6 +89,11 @@ class Creature(Entity):
             0 if self.posY % 2 == 0  else 1, 
             -1, board)
 
+    def render(self, window, pos):
+        pygame.draw.circle(window, 
+                           pygame.Color(0,255,0), 
+                           (pos[0] + Board.tileWidth/2, pos[1] + Board.tileHeight/2), 
+                           5)
 
 class Player(Creature):
     def __init__(self, health, strength, posX, posY, direction):
@@ -101,7 +115,8 @@ class Tile(object):
     def render(self, window, pos):
         window.blit(self.image, pos)
         if self.contents:
-            self.contents.render(window, pos)
+            for content in self.contents:
+                content.render(window, pos)
 
 class Board(object):
     tileWidth  = 40
@@ -135,10 +150,12 @@ if __name__=='__main__':
 
     for x in range(0,10):
         for y in range(0,10):
-            b.spaces[x][y] = Tile('media/rhombus.png', None)
+            b.spaces[x][y] = Tile('media/rhombus.png', [])
 
     p = Player(None, None, 3,4, None)
-    b.spaces[3][4].contents = p
+    c = Creature(None, None, 5, 5, None)
+    b.spaces[5][5].contents.append(c)
+    b.spaces[3][4].contents.append(p)
 
     g = GameplayFrame(None, window, b, p)
     
