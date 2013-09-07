@@ -1,4 +1,5 @@
 import pygame
+import string
 
 from stackframe import StackFrame, runStack
 from dialogue import DialogManager
@@ -30,6 +31,29 @@ class DialogFrame(StackFrame):
                     if xPos > box.left and xPos < box.right and yPos > box.top and yPos < box.bottom:
                         self.manager.followOption(i)
         
+    def wrap(this, input):
+        linelen = 50
+        i = 0;
+        lines = []
+        while i < len(input):
+            # find wrap point
+            if i + linelen < len(input):
+                point = i + linelen
+                opoint = point
+                # find a space to go back to
+                c = input[point]
+                while c != ' ':
+                    point -= 1
+                    if point < 0:
+                        point = opoint
+                        break
+                lines.append(input[i:point])
+                i = point + 1
+            else:
+                lines.append(input[i:len(input)])
+                break
+        return lines
+
     def render(self):
         self.responseSurface = pygame.Surface(self.responseSize)
         self.promptSurface = pygame.Surface(self.promptSize)
@@ -49,9 +73,12 @@ class DialogFrame(StackFrame):
         options = self.manager.getCurrentOptions()
 
         # Draw the current response
-        rtext = font.render(response, 1, (245,245,245))
-        rtextPos = rtext.get_rect().move(10,10)
-        self.responseSurface.blit(rtext, rtextPos)
+        vposition = 10
+        for line in self.wrap(response):
+            rtext = font.render(line, 1, (245,245,245))
+            rtextPos = rtext.get_rect().move(10,vposition)
+            vposition += 16
+            self.responseSurface.blit(rtext, rtextPos)
 
         # Draw the dialog options
         self.boxes = []
