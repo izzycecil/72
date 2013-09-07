@@ -55,10 +55,12 @@ class Creature(Entity):
         self.direction = direction
 
     def move(self, dx, dy, board):
-        board.spaces[self.posX][self.posY].contents = None
-        self.posX += dx
-        self.posY += dy
-        board.spaces[self.posX][self.posY].contents = self
+        dest = board.spaces[self.posX][self.posY]
+        if not filter(lambda x: x.passable, dest.contents):
+            board.spaces[self.posX][self.posY].contents.remove(self)
+            self.posX += dx
+            self.posY += dy
+            board.spaces[self.posX][self.posY].contents.append(self)
 
     def moveUp(self, board):
         self.move(
@@ -101,7 +103,8 @@ class Tile(object):
     def render(self, window, pos):
         window.blit(self.image, pos)
         if self.contents:
-            self.contents.render(window, pos)
+            for content in self.contents:
+                content.render(window, pos)
 
 class Board(object):
     tileWidth  = 40
@@ -135,10 +138,10 @@ if __name__=='__main__':
 
     for x in range(0,10):
         for y in range(0,10):
-            b.spaces[x][y] = Tile('media/rhombus.png', None)
+            b.spaces[x][y] = Tile('media/rhombus.png', [])
 
     p = Player(None, None, 3,4, None)
-    b.spaces[3][4].contents = p
+    b.spaces[3][4].contents.append(p)
 
     g = GameplayFrame(None, window, b, p)
     
