@@ -102,7 +102,7 @@ def goBack():
 functions['b'] = goBack
 
 def saveTree():
-    with open(args.treename, 'wb') as f:
+    with open(filename, 'wb') as f:
         root.save(f)
     print "Saved."
 functions['s'] = saveTree
@@ -141,6 +141,7 @@ print "TREEDIT - '?' for help, 'x' to exit"
 # set up the history thing
 history = []
 current = root
+filename = args.treename
 
 ### MAIN LOOP
 
@@ -153,4 +154,6 @@ while True:
     try:
         functions[cmd[0]](*args)
     except TypeError:
-        print "Bad command. '?' for help."
+        print "Bad command usage. '?' for help."
+    except KeyError:
+        print "Not a command. '?' for help."
