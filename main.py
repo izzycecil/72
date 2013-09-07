@@ -11,9 +11,18 @@ def initGraphics():
     return window
     
 def main():
-    stack = []
-    while runStack(stack):
+    stack  = []
+
+    window   = initGraphics()
+    fpsClock = pygame.time.Clock()
+
+    while True:
+        window.fill(pygame.Color(255,255,255))
+        if not runStack(stack):
+            break
         pygame.display.update()
+        fpsClock.tick(30)
+
     return
 
 if __name__=='__main__':
