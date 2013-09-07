@@ -1,7 +1,18 @@
+def runStack(stack):
+    if stack:
+        stack[-1].update()
+    else:
+        return False
+    if stack:
+        stack[-1].render()
+        stack[-1].paint()
+    else:
+        return False
+
+    return True
 
 
 class StackFrame(object):
-
     def __init__(self, stack):
         self.stack = stack
     
@@ -19,4 +30,3 @@ class StackFrame(object):
 
     def quit(self):
         del self.stack[:]
-
