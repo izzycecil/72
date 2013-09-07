@@ -13,8 +13,9 @@ def runStack(stack):
 
 
 class StackFrame(object):
-    def __init__(self, stack):
-        self.stack = stack
+    def __init__(self, stack, window):
+        self.stack  = stack
+        self.window = window
     
     def render(self):
         pass
