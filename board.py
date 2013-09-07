@@ -75,6 +75,18 @@ class Entity(object):
         """
         pass
 
+    def getUp(self):
+        return (-1 if self.posY % 2 == 0 else 0, -1)
+        
+    def getDown(self):
+        return (1 if self.posY %2 == 1 else 0, 1)
+
+    def getLeft(self):
+        return (-1 if self.posY % 2 ==0 else 0, 1)
+
+    def getRight(self):
+        return (0 if self.posY % 2 == 0 else 1, -1)
+
     
 class Creature(Entity):
 
@@ -110,29 +122,33 @@ class Creature(Entity):
                 dest.contents.append(self)
 
     def moveUp(self, board):
-        self.move(
-            -1 if self.posY % 2 == 0  else 0, 
-            -1, board)
+        x,y = self.getUp()
+        self.direction = 'up'
+        self.move(x,y,board)
 
     def moveDown(self, board):
-        self.move(
-            1 if self.posY % 2 == 1  else 0, 
-            1, board)
+        x,y = self.getDown()
+        self.direction = 'down'
+        self.move(x,y,board)
 
     def moveLeft(self, board):
-        self.move(
-            -1 if self.posY % 2 == 0  else 0, 
-            1, board)
+        x,y = self.getLeft()
+        self.direction = 'left'
+        self.move(x,y,board)
 
     def moveRight(self, board):
-        self.move(
-            0 if self.posY % 2 == 0  else 1, 
-            -1, board)
+        x,y = self.getRight()
+        self.direction = 'right'
+        self.move(x,y,board)
 
     def render(self, window):
         ptransit       = (self.speed - self.transit) / float(self.speed)
         splotx, sploty = Board.getCoord(self.prevX, self.prevY)
         eplotx, eploty = Board.getCoord(self.posX, self.posY)
+        splotx += Board.tileWidth/2
+        sploty += Board.tileHeight/2
+        eplotx += Board.tileWidth/2
+        eploty += Board.tileHeight/2
         plotx = int(splotx + (eplotx - splotx) * ptransit)
         ploty = int(sploty + (eploty - sploty) * ptransit)
         pygame.draw.circle(window, 
