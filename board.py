@@ -75,6 +75,18 @@ class Entity(object):
         """
         pass
 
+    def getUp(self):
+        return (-1 if self.posY % 2 == 0 else 0, -1)
+        
+    def getDown(self):
+        return (1 if self.posY %2 == 1 else 0, 1)
+
+    def getLeft(self):
+        return (-1 if self.posY % 2 ==0 else 0, 1)
+
+    def getRight(self):
+        return (0 if self.posY % 2 == 0 else 1, -1)
+
     
 class Creature(Entity):
 
@@ -110,24 +122,20 @@ class Creature(Entity):
                 dest.contents.append(self)
 
     def moveUp(self, board):
-        self.move(
-            -1 if self.posY % 2 == 0  else 0, 
-            -1, board)
+        x,y = self.getUp()
+        self.move(x,y,board)
 
     def moveDown(self, board):
-        self.move(
-            1 if self.posY % 2 == 1  else 0, 
-            1, board)
+        x,y = self.getDown()
+        self.move(x,y,board)
 
     def moveLeft(self, board):
-        self.move(
-            -1 if self.posY % 2 == 0  else 0, 
-            1, board)
+        x,y = self.getLeft()
+        self.move(x,y,board)
 
     def moveRight(self, board):
-        self.move(
-            0 if self.posY % 2 == 0  else 1, 
-            -1, board)
+        x,y = self.getRight()
+        self.move(x,y,board)
 
     def render(self, window):
         ptransit       = (self.speed - self.transit) / float(self.speed)
