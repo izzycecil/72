@@ -6,7 +6,7 @@ from dialogue import DialogManager
 
 class DialogFrame(StackFrame):
 
-    def __init__(self, stack, window, manager):
+    def __init__(self, stack, window, manager, npcImage=None, playerImage=None):
         super(DialogFrame, self).__init__(stack, window)
         self.stack  = stack
         self.window = window
@@ -25,10 +25,16 @@ class DialogFrame(StackFrame):
         self.npcSize = (160,160)
         self.playerPosition = (40, 300)
         self.playerSize = (160, 160)
-        self.npcSurface = pygame.Surface(self.npcSize)
-        self.playerSurface = pygame.Surface(self.playerSize)
 
-        
+        if npcImage != None:
+            self.npcImage = pygame.image.load(npcImage)
+        else:
+            self.npcImage = None
+
+        if playerImage != None:
+            self.playerImage = pygame.image.load(playerImage)
+        else:
+            self.playerImage = None
 
         self.boxes = []
         
@@ -105,12 +111,15 @@ class DialogFrame(StackFrame):
             vertPos += 20
             self.boxes.append(otextPos)
 
-
-
-
     def paint(self):
         self.window.blit(self.responseSurface, self.responsePosition)
         self.window.blit(self.promptSurface, self.promptPosition)
+
+        if self.npcImage != None:
+            self.window.blit(self.npcImage, self.npcPosition)
+
+        if self.playerImage != None:
+            self.window.blit(self.playerImage, self.playerPosition)
 
     def update(self):
         pass
