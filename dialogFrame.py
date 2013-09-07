@@ -9,29 +9,66 @@ class DialogFrame(StackFrame):
         super(DialogFrame, self).__init__(stack, window)
         self.stack  = stack
         self.window = window
-        self.surface = pygame.Surface((400,400))
         self.manager = manager
-        self.position = (40,40)
-        self.lines = []
+        self.responsePosition = (40,40)
+        self.responseSize = (350,100)
+        self.promptPosition = (150,300)
+        self.promptSize = (350, 100)
+        self.responseSurface = pygame.Surface(self.responseSize)
+        self.promptSurface = pygame.Surface(self.promptSize)
+        self.boxes = []
         
     def poll(self):
         """ Poll with
         for event in pygame.event.get()...
         """
-        pass
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                xPos = event.pos[0] - self.promptPosition[0] # move these coordinates in to our canvas
+                yPos = event.pos[1] - self.promptPosition[1]
+                for i, box in enumerate(self.boxes):
+                    if xPos > box.left and xPos < box.right and yPos > box.top and yPos < box.bottom:
+                        self.manager.followOption(i)
         
     def render(self):
-        fontSize = 36
+        self.responseSurface = pygame.Surface(self.responseSize)
+        self.promptSurface = pygame.Surface(self.promptSize)
+
+        fontSize = 20
         fontSpace = 4
         # use the default font
         font = pygame.font.Font(None, fontSize)
 
-        text = font.render("TEST", 1, (250, 250, 250))
-        textPos = text.get_rect(centerx = self.surface.get_width() / 2, centery = 30)
-        self.surface.blit(text, textPos)
+        # text = font.render("TEST", 1, (250, 250, 250))
+        # textPos = text.get_rect(centerx = self.surface.get_width() / 2, centery = 30)
+        # self.surface.blit(text, textPos)
+
+        # Get the current dialog line
+        response = self.manager.getCurrentResponse()
+        # Get the options
+        options = self.manager.getCurrentOptions()
+
+        # Draw the current response
+        rtext = font.render(response, 1, (245,245,245))
+        rtextPos = rtext.get_rect().move(10,10)
+        self.responseSurface.blit(rtext, rtextPos)
+
+        # Draw the dialog options
+        self.boxes = []
+        vertPos = 10
+        for i,option in enumerate(options):
+            otext = font.render(option, 1, (200,200,255))
+            otextPos = otext.get_rect().move(10,vertPos)
+            self.promptSurface.blit(otext, otextPos)
+            vertPos += 20
+            self.boxes.append(otextPos)
+
+
+
 
     def paint(self):
-        self.window.blit(self.surface, self.position)
+        self.window.blit(self.responseSurface, self.responsePosition)
+        self.window.blit(self.promptSurface, self.promptPosition)
 
     def update(self):
         pass
