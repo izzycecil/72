@@ -1,38 +1,74 @@
+#!/usr/bin/env python
+
 import pygame
 from pygame.locals import *
 
-from board      import Board, Creature, Tile
+from board      import Board, Creature, Tile, Player
 from stackframe import StackFrame, runStack
 
 class GameplayFrame(StackFrame):
 
+    updateMod = 8
+
     def __init__(self, stack, window, board, player):
         super(GameplayFrame, self).__init__(stack, window)
-        self.stack  = stack
-        self.window = window
-        self.board  = board
-        self.player = player
+        self.stack         = stack
+        self.window        = window
+        self.board         = board
+        self.player        = player
+        self.updateCounter = 0
+        self.inputDict     = {'up'   :False, 
+                              'down' :False, 
+                              'left' :False, 
+                              'right':False,
+                              'act'  :False,
+                              'pause':False,}
         
     def poll(self):
         for event in pygame.event.get():
             if event.type == KEYDOWN:
-                if event.key == K_LEFT:
-                    self.player.moveLeft(self.board)
-                if event.key == K_RIGHT:
-                    self.player.moveRight(self.board)
-                if event.key == K_UP:
-                    self.player.moveUp(self.board)
-                if event.key == K_DOWN:
-                    self.player.moveDown(self.board)
+                if event.key in (K_UP, K_w):
+                    self.inputDict['up']    = True
+                    self.inputDict['down']  = False
+                    self.inputDict['left']  = False
+                    self.inputDict['right'] = False
+                if event.key in (K_DOWN, K_s):
+                    self.inputDict['up']    = False
+                    self.inputDict['down']  = True
+                    self.inputDict['left']  = False
+                    self.inputDict['right'] = False
+                if event.key in (K_LEFT, K_a):
+                    self.inputDict['up']    = False
+                    self.inputDict['down']  = False
+                    self.inputDict['left']  = True
+                    self.inputDict['right'] = False
+                if event.key in (K_RIGHT, K_d):
+                    self.inputDict['up']    = False
+                    self.inputDict['down']  = False
+                    self.inputDict['left']  = False
+                    self.inputDict['right'] = True
+
+            if event.type == KEYUP:
+                if event.key in (K_UP, K_w):
+                    self.inputDict['up']    = False
+                if event.key in (K_DOWN, K_s):
+                    self.inputDict['down']  = False
+                if event.key in (K_LEFT, K_a):
+                    self.inputDict['left']  = False
+                if event.key in (K_RIGHT, K_d):
+                    self.inputDict['right'] = False
+                                            
         
     def render(self):
         self.board.render(window)
 
-    def paint(self):
-        pass
-
     def update(self):
-        pass
+        if not self.updateCounter:
+            self.board.update(self)
+            self.updateCounter += 1
+        else:
+            self.player.update(self)
+            self.updateCounter = (self.updateCounter+1)%GameplayFrame.updateMod
 
 
 if __name__=='__main__':
@@ -47,10 +83,9 @@ if __name__=='__main__':
         for y in range(0,10):
             b.spaces[x][y] = Tile('media/rhombus.png', [])
 
-    p = Player(None, None, 3,4, None)
-    c = Creature(None, None, 5, 5, None)
-    b.spaces[5][5].contents.append(c)
-    b.spaces[3][4].contents.append(p)
+    p = Player(None, None, None, None, None, 4)
+    b.placeEntity(p, 3, 4)
+    #b.placeEntity(Creature(None, None, None, None, None), 5,5)
 
     g = GameplayFrame(None, window, b, p)
     
