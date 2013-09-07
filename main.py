@@ -10,9 +10,14 @@ def initGraphics():
     pygame.display.set_caption('72 --- Death of One, Death of Many')
     return window
     
+def initSound():
+    pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+    
 def main():
     stack  = []
 
+    initSound()
+    
     window   = initGraphics()
     fpsClock = pygame.time.Clock()
 
