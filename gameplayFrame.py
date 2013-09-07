@@ -25,6 +25,8 @@ class GameplayFrame(StackFrame):
                               'pause':False,}
         
     def poll(self):
+        super(GameplayFrame, self).poll()
+    
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key in (K_UP, K_w):
@@ -60,7 +62,7 @@ class GameplayFrame(StackFrame):
                                             
         
     def render(self):
-        self.board.render(window)
+        self.board.render(self.window)
 
     def update(self):
         if not self.updateCounter:
