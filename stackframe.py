@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 
 def runStack(stack):
     if stack:
@@ -24,7 +24,9 @@ class StackFrame(object):
 
 
     def poll(self):
-        pass
+        for event in pygame.event.get(pygame.QUIT):
+            sys.exit()
+        
     
     def render(self):
         pass
