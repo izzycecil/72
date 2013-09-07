@@ -1,6 +1,6 @@
 def runStack(stack):
     if stack:
-        stack[-1].pole()
+        stack[-1].poll()
         stack[-1].update()
     else:
         return False
