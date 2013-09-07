@@ -133,6 +133,10 @@ class Creature(Entity):
         ptransit       = (self.speed - self.transit) / float(self.speed)
         splotx, sploty = Board.getCoord(self.prevX, self.prevY)
         eplotx, eploty = Board.getCoord(self.posX, self.posY)
+        splotx += Board.tileWidth/2
+        sploty += Board.tileHeight/2
+        eplotx += Board.tileWidth/2
+        eploty += Board.tileHeight/2
         plotx = int(splotx + (eplotx - splotx) * ptransit)
         ploty = int(sploty + (eploty - sploty) * ptransit)
         pygame.draw.circle(window, 
