@@ -1,20 +1,29 @@
 import pygame
+from pygame.locals import *
 
 from stackframe import StackFrame, runStack
 
 class GameplayFrame(StackFrame):
 
-    def __init__(self, stack, window, board):
+    def __init__(self, stack, window, board, player):
         super(GameplayFrame, self).__init__(stack, window)
         self.stack  = stack
         self.window = window
         self.board  = board
+        self.player = player
         
     def poll(self):
-        """ Pole with
-        for event in pygame.event.get()...
-        """
-        pass
+        for event in pygame.event.get():
+            if event.type == KEYDOWN:
+
+                if event.key == K_LEFT:
+                    self.player.move(-1, 0, self.board)
+                if event.key == K_RIGHT:
+                    self.player.move(1,0, self.board)
+                if event.key == K_UP:
+                    self.player.move(0, -1, self.board)
+                if event.key == K_DOWN:
+                    self.player.move(0, 1, self.board)
         
     def render(self):
         self.board.render(window)
@@ -28,26 +37,34 @@ class GameplayFrame(StackFrame):
 
 class Entity(object):
 
-    def __init__(self, position, passable):
+    def __init__(self, posX, posY, passable):
         """
         position -- board co-ord
         passable -- boolean for if can be walked through
         """
-        self.position = position
+        self.posX     = posX
+        self.posY     = posY
         self.passable = passable
 
     
 class Creature(Entity):
 
-    def __init__(self, health, strength, position):
-        super(Creature, self).__init__(position, False)
+    def __init__(self, health, strength, posX, posY, direction):
+        super(Creature, self).__init__(posX, posY, False)
         self.health   = health
         self.strength = strength
+        self.direction
+
+    def move(self, dx, dy, board):
+        board.spaces[self.posX][self.posY].contents = None
+        self.posX += dx
+        self.posY += dy
+        board.spaces[self.posX][self.posY].contents = self
 
 
 class Player(Creature):
-    def __init__(self, health, strength, position):
-        super(Player, self).__init__(health, strength, position)
+    def __init__(self, health, strength, posX, posY, direction):
+        super(Player, self).__init__(health, strength, posX, posY, direction)
         
     def render(self, window, pos):
         pygame.draw.circle(window, 
@@ -101,9 +118,10 @@ if __name__=='__main__':
         for y in range(0,10):
             b.spaces[x][y] = Tile('media/rhombus.png', None)
 
-    b.spaces[3][4].contents = Player(None, None, None)
+    p = Player(None, None, 3,4)
+    b.spaces[3][4].contents = p
 
-    g = GameplayFrame(None, window, b)
+    g = GameplayFrame(None, window, b, p)
     
     while True:
         window.fill(pygame.Color(255,255,255))
