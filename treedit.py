@@ -1,34 +1,50 @@
 import os, sys, argparse
 from dialogue import Dialogue
-
+from colorama import Fore, Back, Style, init
+init()
 functions = {}
+
+### DISPLAY UTILS
+def setColorPrompt():
+    sys.stdout.write(Fore.CYAN)
+
+def setColorOutput():
+    sys.stdout.write(Back.BLUE)
+
+def setColorReset():
+    sys.stdout.write(Fore.RESET + Back.RESET + Style.RESET_ALL)
+
+def printOutput(text):
+    setColorOutput()
+    print text
+    setColorReset()
 
 ### FUNCTIONALITY
 
 def help():
     print """
-    ?   help
-    p   Print prompt and reply for this node
-    ep  Edit Prompt
-    er  Edit Reply
+    ?     help
+    p     Print prompt and reply for this node
+    ep    Edit Prompt
+    er    Edit Reply
     
-    o   print Options from this node (prompts only)
-        also use this to descend to child nodes
-    a   Add an option (child node)
-    r   Remove an option (child node)
+    o     print Options from this node (prompts only)
+    a     Add an option
+    d n   Descend to option #n
+    r n   Remove option #n
     
-    b   go Back to the previous node
+    b     go Back to the previous node
 
-    s   Save the current tree state
-    x   eXit (without saving)
+    s     Save the current tree state
+    x     eXit (without saving)
     """
 functions['?'] = help
 
 def printNode():
     print "PROMPT:"
-    print current.prompt
+    printOutput(current.prompt)
     print "RESPONSE:"
-    print current.response
+    printOutput(current.response)
 functions['p'] = printNode
 
 def editPrompt():
@@ -46,18 +62,9 @@ def editResponse():
 functions['er'] = editResponse
 
 def printOptions():
-    global current
     print "Prompts from here:"
     for i, option in enumerate(current.options):
-        print "  {}: {}".format(i, option.prompt)
-    print "Descend to option or Cancel?"
-    goto = raw_input("number or 'c' > ")
-    try:
-        last = current
-        current = current.options[int(goto)]
-        history.append(last)
-    except ValueError:
-        print "Staying here."
+        printOutput("  {}: {}".format(i, option.prompt))
 functions['o'] = printOptions
 
 def addOption():
@@ -68,17 +75,21 @@ def addOption():
     print "Added."
 functions['a'] = addOption
 
-def removeOption():
+def descend(optiondex):
     global current
-    print "Prompts from here:"
-    for i, option in enumerate(current.options):
-        print "  {}: {}".format(i, option.prompt)
-    print "Delete option or Cancel?"
-    goto = raw_input("number or 'c' > ")
     try:
-        current = current.options.pop(int(goto))
+        last = current
+        current = current.options[int(optiondex)]
+        history.append(last)
     except ValueError:
-        print "Did nothing."
+        print "Descend failed (bad node number?)"
+functions['d'] = descend
+
+def removeOption(optiondex):
+    try:
+        current.options.pop(int(optiondex))
+    except ValueError:
+        print "Remove failed (bad node number?)"
 functions['r'] = removeOption
 
 def goBack():
@@ -134,9 +145,12 @@ current = root
 ### MAIN LOOP
 
 while True:
-    cmd = raw_input("treedit> ")
+    setColorPrompt()
+    cmd = raw_input("treedit> ").split(" ")
+    setColorReset()
+    args = cmd[1:]
 
-    if cmd in functions.keys():
-        functions[cmd]()
-    else:
-        print "Not a real command. '?' for help."
+    try:
+        functions[cmd[0]](*args)
+    except TypeError:
+        print "Bad command. '?' for help."
