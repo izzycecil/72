@@ -1,5 +1,6 @@
 def runStack(stack):
     if stack:
+        stack[-1].pole()
         stack[-1].update()
     else:
         return False
@@ -16,6 +17,9 @@ class StackFrame(object):
     def __init__(self, stack, window):
         self.stack  = stack
         self.window = window
+
+    def poll(self):
+        pass
     
     def render(self):
         pass
