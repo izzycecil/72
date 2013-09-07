@@ -24,5 +24,5 @@ class Dialogue:
     Saves the tree, with this node as root, to file
     """
     def save(self, f):
-        pickle.dump(self.__dict__,f,2)
+        pickle.dump(self,f,2)
         f.close()
