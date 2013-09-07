@@ -35,8 +35,9 @@ class DialogManager(Object):
     the actual game product.
     """
 
-    def __init__(self, root):
-        self.root = root
+    def __init__(self, treename):
+        with open(treename + '.72d', 'rb') as f:
+            root = Dialogue.load(f)
         self.position = root
         self.history = []
 
