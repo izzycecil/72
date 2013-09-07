@@ -15,15 +15,14 @@ class GameplayFrame(StackFrame):
     def poll(self):
         for event in pygame.event.get():
             if event.type == KEYDOWN:
-
                 if event.key == K_LEFT:
-                    self.player.move(-1, 0, self.board)
+                    self.player.moveLeft(self.board)
                 if event.key == K_RIGHT:
-                    self.player.move(1,0, self.board)
+                    self.player.moveRight(self.board)
                 if event.key == K_UP:
-                    self.player.move(0, -1, self.board)
+                    self.player.moveUp(self.board)
                 if event.key == K_DOWN:
-                    self.player.move(0, 1, self.board)
+                    self.player.moveDown(self.board)
         
     def render(self):
         self.board.render(window)
@@ -51,15 +50,35 @@ class Creature(Entity):
 
     def __init__(self, health, strength, posX, posY, direction):
         super(Creature, self).__init__(posX, posY, False)
-        self.health   = health
-        self.strength = strength
-        self.direction
+        self.health    = health
+        self.strength  = strength
+        self.direction = direction
 
     def move(self, dx, dy, board):
         board.spaces[self.posX][self.posY].contents = None
         self.posX += dx
         self.posY += dy
         board.spaces[self.posX][self.posY].contents = self
+
+    def moveUp(self, board):
+        self.move(
+            -1 if self.posY % 2 == 0  else 0, 
+            -1, board)
+
+    def moveDown(self, board):
+        self.move(
+            1 if self.posY % 2 == 1  else 0, 
+            1, board)
+
+    def moveLeft(self, board):
+        self.move(
+            -1 if self.posY % 2 == 0  else 0, 
+            1, board)
+
+    def moveRight(self, board):
+        self.move(
+            0 if self.posY % 2 == 0  else 1, 
+            -1, board)
 
 
 class Player(Creature):
@@ -118,7 +137,7 @@ if __name__=='__main__':
         for y in range(0,10):
             b.spaces[x][y] = Tile('media/rhombus.png', None)
 
-    p = Player(None, None, 3,4)
+    p = Player(None, None, 3,4, None)
     b.spaces[3][4].contents = p
 
     g = GameplayFrame(None, window, b, p)
