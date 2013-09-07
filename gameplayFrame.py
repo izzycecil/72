@@ -99,7 +99,7 @@ if __name__=='__main__':
 
     for x in range(0,10):
         for y in range(0,10):
-            b.spaces[x][y] = Tile('rhombus.png', None)
+            b.spaces[x][y] = Tile('media/rhombus.png', None)
 
     b.spaces[3][4].contents = Player(None, None, None)
 
