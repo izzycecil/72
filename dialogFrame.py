@@ -11,12 +11,25 @@ class DialogFrame(StackFrame):
         self.stack  = stack
         self.window = window
         self.manager = manager
+
+        # Surface setup for dialog components
         self.responsePosition = (40,40)
         self.responseSize = (350,100)
-        self.promptPosition = (150,300)
+        self.promptPosition = (210,300)
         self.promptSize = (350, 100)
-        self.responseSurface = pygame.Surface(self.responseSize)
-        self.promptSurface = pygame.Surface(self.promptSize)
+        self.responseSurface = pygame.Surface(self.responseSize, flags=pygame.SRCALPHA)
+        self.promptSurface = pygame.Surface(self.promptSize, flags=pygame.SRCALPHA)
+
+        # Surface setup for zoomed avaters
+        self.npcPosition = (400, 40)
+        self.npcSize = (160,160)
+        self.playerPosition = (40, 300)
+        self.playerSize = (160, 160)
+        self.npcSurface = pygame.Surface(self.npcSize)
+        self.playerSurface = pygame.Surface(self.playerSize)
+
+        
+
         self.boxes = []
         
     def poll(self):
@@ -57,6 +70,8 @@ class DialogFrame(StackFrame):
     def render(self):
         self.responseSurface = pygame.Surface(self.responseSize)
         self.promptSurface = pygame.Surface(self.promptSize)
+        self.responseSurface.fill((0,0,0,200))
+        self.promptSurface.fill((0,0,0,200))
 
         fontSize = 20
         fontSpace = 4
@@ -105,7 +120,7 @@ if __name__=='__main__':
     pygame.init()
     fpsClock = pygame.time.Clock()
     window = pygame.display.set_mode((600,600))
-    pygame.display.set_caption('72 --- gameTest')
+    pygame.display.set_caption('72 --- dialogTest')
 
     manager = DialogManager('testtree')
 
