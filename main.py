@@ -8,6 +8,8 @@ from board          import Board, Tile, Enemy, Clerk, Creature, Player
 from gameplayFrame  import GameplayFrame
 from menuFrame      import MenuTree
 from menus          import gameMenuTree, mainMenuTree
+from dialogue       import DialogManager
+from dialogFrame    import DialogFrame
 
 def initGraphics():
     pygame.init()
@@ -19,17 +21,17 @@ def initSound():
     pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
 
 def gameFrame(window, stack):
-    # b = Board(None, filename='media/maps/test')
-    
+    clerkDialogManager = DialogManager('redneck')
+    diag = DialogFrame(stack, window, clerkDialogManager, playerImage='media/avatars/prot_shitty.png', npcImage='media/avatars/never_use.png')
     b = Board((20,20))
 
     for x in range(0,20):
         for y in range(0,20):
-            b.spaces[x][y] = Tile('media/tileproto1.png', [])
+            b.spaces[x][y] = Tile('media/tiles/basic.png', [])
 
     p = Player(20, 10, None, None, None, 4)
     b.placeEntity(p, 3, 4)
-    b.placeEntity(Clerk(20, 10, None, 'redneck'), 5,5)
+    b.placeEntity(Clerk(20, 10, None, diag), 5,5)
 
     return GameplayFrame(stack, window, b, p)
     

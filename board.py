@@ -31,11 +31,16 @@ class Board(object):
         self.dim = (self.xDim, self.yDim)
 
     def render(self, window):
+        contents = []
         for y in range(0, self.yDim):
             for x in range(0, self.xDim):
                 if self.spaces[x][y]:
                     plotx, ploty = Board.getCoord(x,y)
                     self.spaces[x][y].render(window, (plotx, ploty))
+                    contents += self.spaces[x][y].contents
+
+        for content in contents:
+            content.render(window)
     
     def placeEntity(self, entity, x, y):
         if self.spaces[x][y]:
@@ -231,9 +236,8 @@ class Player(Creature):
                 if isinstance(entity, Creature):
                     self.attack(entity, board)
                 if isinstance(entity, Clerk):
-                    clerkDialogManager = DialogManager(entity.conversation)
-                    stack.append(DialogFrame(stack, window, clerkDialogManager, playerImage='media/avatars/prot_shitty.png', npcImage='media/avatars/never_use.png'))
 
+                    stack.append(entity.conversation)
 
 class Enemy(Creature):
 
