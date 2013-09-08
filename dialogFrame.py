@@ -14,7 +14,7 @@ class DialogFrame(StackFrame):
 
         # Surface setup for dialog components
         self.responsePosition = (40,40)
-        self.responseSize = (350,100)
+        self.responseSize = (350,150)
         self.promptPosition = (210,300)
         self.promptSize = (350, 100)
         self.responseSurface = pygame.Surface(self.responseSize, flags=pygame.SRCALPHA)
@@ -51,7 +51,7 @@ class DialogFrame(StackFrame):
                         self.manager.followOption(i)
         
     def wrap(this, input):
-        linelen = 50
+        linelen = 45
         i = 0;
         lines = []
         while i < len(input):
@@ -63,6 +63,7 @@ class DialogFrame(StackFrame):
                 c = input[point]
                 while c != ' ':
                     point -= 1
+                    c = input[point]
                     if point < 0:
                         point = opoint
                         break
@@ -131,7 +132,7 @@ if __name__=='__main__':
     window = pygame.display.set_mode((600,600))
     pygame.display.set_caption('72 --- dialogTest')
 
-    manager = DialogManager('testtree')
+    manager = DialogManager('yourson')
 
     frame = DialogFrame(None, window, manager)
     

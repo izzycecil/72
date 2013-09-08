@@ -36,7 +36,7 @@ class DialogManager(object):
     """
 
     def __init__(self, treename):
-        with open(treename + '.72d', 'rb') as f:
+        with open('dialog/' + treename + '.72d', 'rb') as f:
             root = Dialogue.load(f)
         self.position = root
         self.history = []
