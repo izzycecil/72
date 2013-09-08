@@ -68,7 +68,7 @@ class Board(object):
 this takes the board directions and converts them
 into the numerical directions used by the animations
 """
-directionDict = {'up':7, 'down':3, 'left':5, 'right':1}
+directionDict = {'up':1, 'down':5, 'left':1, 'right':5}
 
 class Entity(object):
 
