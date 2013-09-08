@@ -14,16 +14,16 @@ class DialogFrame(StackFrame):
 
         # Surface setup for dialog components
         self.responsePosition = (40,40)
-        self.responseSize = (350,150)
+        self.responseSize = (350,160)
         self.promptPosition = (210,300)
-        self.promptSize = (350, 100)
+        self.promptSize = (350, 160)
         self.responseSurface = pygame.Surface(self.responseSize, flags=pygame.SRCALPHA)
         self.promptSurface = pygame.Surface(self.promptSize, flags=pygame.SRCALPHA)
 
         # Surface setup for zoomed avaters
-        self.npcPosition = (400, 40)
+        self.npcPosition = (40, 300)
         self.npcSize = (160,160)
-        self.playerPosition = (40, 300)
+        self.playerPosition = (400, 40)
         self.playerSize = (160, 160)
 
         if npcImage != None:
@@ -132,9 +132,9 @@ if __name__=='__main__':
     window = pygame.display.set_mode((600,600))
     pygame.display.set_caption('72 --- dialogTest')
 
-    manager = DialogManager('yourson')
+    manager = DialogManager('countergirl')
 
-    frame = DialogFrame(None, window, manager)
+    frame = DialogFrame(None, window, manager, npcImage='media/avatars/prot_shitty.png', playerImage='media/avatars/never_use.png')
     
     while True:
         window.fill(pygame.Color(255,255,255))
