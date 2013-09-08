@@ -93,6 +93,7 @@ class Creature(Entity):
         self.prevX     = self.posX
         self.prevY     = self.posY
         self.transit   = 0
+        self.interactTime = 0  
 
 
     def move(self, dx, dy, board):
@@ -215,6 +216,9 @@ class Player(Creature):
         if self.transit > 0:
             self.transit -= 1
 
+        if self.interactTime > 0:
+            self.interactTime -= 1
+
         if inputs['left']:
             self.moveLeft(gameFrame.board)
         elif inputs['right']:
@@ -223,3 +227,27 @@ class Player(Creature):
             self.moveUp(gameFrame.board)
         elif inputs['down']:
             self.moveDown(gameFrame.board)
+        
+        
+        if inputs['act'] and self.interactTime == 0:
+            self.interact()
+
+    def interact(self):
+        if self. direction = 'up':
+            dx,dy = self.getUp()
+        if self. direction = 'down':
+            dx,dy = self.getDown()
+        if self. direction = 'left':
+            dx,dy = self.getLeft()
+        if self. direction = 'right':
+            dx,dy = self.getRight()
+
+        if destX in range(0, board.xDim) and destY in range(0,board.yDim):
+                ispace = board.spaces[destX][destY]
+            else:
+                return
+
+
+        for entity in ispace.contents:
+            if isinstance(entity, Creature):
+                self.attack(entity)
