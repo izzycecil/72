@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 
 def runStack(stack):
     if stack:
@@ -16,21 +16,27 @@ def runStack(stack):
 
 
 class StackFrame(object):
-    def __init__(self, stack, window, music=None):
+    def __init__(self, stack, window, renderOver=None, music=None):
         self.stack  = stack
         self.window = window
         if music is not None:
             self.music = pygame.mixer.Sound(music)
+        if renderOver is not None:
+            self.renderOver = renderOver
 
 
     def poll(self):
-        pass
+        for event in pygame.event.get(pygame.QUIT):
+            sys.exit()
+        
     
     def render(self):
-        pass
+        if hasattr(self, 'renderOver'):
+            self.stack[self.renderOver].render()
 
     def paint(self):
-        pass
+        if hasattr(self, 'renderOver'):
+            self.stack[self.renderOver].paint()
 
     def update(self):
         if hasattr(self, 'music'):

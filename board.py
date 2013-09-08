@@ -2,12 +2,17 @@ from random import random
 
 import pygame
 from   pygame.locals import *
+from   mapAux        import loadMap
+from   tile          import Tile
 
 class Board(object):
     tileWidth  = 80
     tileHeight = 80
 
-    def __init__(self, dim):
+    def __init__(self, dim, filename=None):
+        if filename is not None:
+            self.load(filename)
+            return
         self.dim    = dim
         self.xDim   = dim[0]
         self.yDim   = dim[1]
@@ -15,6 +20,13 @@ class Board(object):
             [None for x in range(0,dim[0])] 
             for x in range(0,dim[1])
         ]
+
+    def load(self, filename):
+        self.spaces = loadMap(filename)
+        self.xDim = len(self.spaces) - 1
+        self.yDim = len(self.spaces[0]) - 1
+        print "xDim:"+str(self.xDim)+"yDim:"+str(self.yDim)
+        self.dim = (self.xDim, self.yDim)
 
     def render(self, window):
         for y in range(0, self.yDim):
@@ -45,18 +57,6 @@ class Board(object):
         plotx = 10 + x*Board.tileWidth + (y&1)*(Board.tileHeight/2)   
         ploty = 10 + (y*(Board.tileHeight/2))/2
         return plotx, ploty
-
-class Tile(object):
-    def __init__(self, path, contents):
-        self._path    = path
-        self.contents = contents
-        self.image    = pygame.image.load(self._path)
-        
-    def render(self, window, pos):
-        window.blit(self.image, pos)
-        if self.contents:
-            for content in self.contents:
-                content.render(window)
 
 class Entity(object):
 
@@ -223,4 +223,3 @@ class Player(Creature):
             self.moveUp(gameFrame.board)
         elif inputs['down']:
             self.moveDown(gameFrame.board)
-                

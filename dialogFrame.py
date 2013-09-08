@@ -14,16 +14,16 @@ class DialogFrame(StackFrame):
 
         # Surface setup for dialog components
         self.responsePosition = (40,40)
-        self.responseSize = (350,100)
+        self.responseSize = (350,160)
         self.promptPosition = (210,300)
-        self.promptSize = (350, 100)
+        self.promptSize = (350, 160)
         self.responseSurface = pygame.Surface(self.responseSize, flags=pygame.SRCALPHA)
         self.promptSurface = pygame.Surface(self.promptSize, flags=pygame.SRCALPHA)
 
         # Surface setup for zoomed avaters
-        self.npcPosition = (400, 40)
+        self.npcPosition = (40, 300)
         self.npcSize = (160,160)
-        self.playerPosition = (40, 300)
+        self.playerPosition = (400, 40)
         self.playerSize = (160, 160)
 
         if npcImage != None:
@@ -46,12 +46,12 @@ class DialogFrame(StackFrame):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 xPos = event.pos[0] - self.promptPosition[0] # move these coordinates in to our canvas
                 yPos = event.pos[1] - self.promptPosition[1]
-                for i, box in enumerate(self.boxes):
-                    if xPos > box.left and xPos < box.right and yPos > box.top and yPos < box.bottom:
-                        self.manager.followOption(i)
+                for box in self.boxes:
+                    if xPos > box[1].left and xPos < box[1].right and yPos > box[1].top and yPos < box[1].bottom:
+                        self.manager.followOption(box[0])
         
     def wrap(this, input):
-        linelen = 50
+        linelen = 45
         i = 0;
         lines = []
         while i < len(input):
@@ -63,6 +63,7 @@ class DialogFrame(StackFrame):
                 c = input[point]
                 while c != ' ':
                     point -= 1
+                    c = input[point]
                     if point < 0:
                         point = opoint
                         break
@@ -105,11 +106,13 @@ class DialogFrame(StackFrame):
         self.boxes = []
         vertPos = 10
         for i,option in enumerate(options):
-            otext = font.render(option, 1, (200,200,255))
-            otextPos = otext.get_rect().move(10,vertPos)
-            self.promptSurface.blit(otext, otextPos)
-            vertPos += 20
-            self.boxes.append(otextPos)
+            for line in self.wrap(option):
+                otext = font.render(line, 1, (200,200,255))
+                otextPos = otext.get_rect().move(10,vertPos)
+                self.promptSurface.blit(otext, otextPos)
+                vertPos += 16
+                self.boxes.append((i, otextPos))
+            vertPos += 6
 
     def paint(self):
         self.window.blit(self.responseSurface, self.responsePosition)
@@ -131,9 +134,9 @@ if __name__=='__main__':
     window = pygame.display.set_mode((600,600))
     pygame.display.set_caption('72 --- dialogTest')
 
-    manager = DialogManager('testtree')
+    manager = DialogManager('countergirl')
 
-    frame = DialogFrame(None, window, manager)
+    frame = DialogFrame(None, window, manager, npcImage='media/avatars/prot_shitty.png', playerImage='media/avatars/never_use.png')
     
     while True:
         window.fill(pygame.Color(255,255,255))

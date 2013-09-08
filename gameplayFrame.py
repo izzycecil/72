@@ -5,6 +5,7 @@ from pygame.locals import *
 
 from board      import Board, Creature, Tile, Player
 from stackframe import StackFrame, runStack
+from menus      import gameMenuTree
 
 class GameplayFrame(StackFrame):
 
@@ -25,6 +26,8 @@ class GameplayFrame(StackFrame):
                               'pause':False,}
         
     def poll(self):
+        super(GameplayFrame, self).poll()
+    
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key in (K_UP, K_w):
@@ -47,6 +50,8 @@ class GameplayFrame(StackFrame):
                     self.inputDict['down']  = False
                     self.inputDict['left']  = False
                     self.inputDict['right'] = True
+                if event.key in (K_ESCAPE, K_PAUSE):
+                    self.inputDict['pause'] = True
 
             if event.type == KEYUP:
                 if event.key in (K_UP, K_w):
@@ -57,10 +62,12 @@ class GameplayFrame(StackFrame):
                     self.inputDict['left']  = False
                 if event.key in (K_RIGHT, K_d):
                     self.inputDict['right'] = False
+                if event.key in (K_ESCAPE, K_PAUSE):
+                    self.inputDict['pause'] = False
                                             
         
     def render(self):
-        self.board.render(window)
+        self.board.render(self.window)
 
     def update(self):
         #if not self.updateCounter:
