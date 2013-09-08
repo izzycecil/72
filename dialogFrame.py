@@ -37,7 +37,6 @@ class DialogFrame(StackFrame):
             self.playerImage = None
 
         self.boxes = []
-        self.exitFlag = False
         
     def poll(self):
         """ Poll with
@@ -49,9 +48,10 @@ class DialogFrame(StackFrame):
                 yPos = event.pos[1] - self.promptPosition[1]
                 for box in self.boxes:
                     if xPos > box[1].left and xPos < box[1].right and yPos > box[1].top and yPos < box[1].bottom:
-                        if self.exitFlag == True:
+                        try:
+                            self.manager.followOption(box[0])
+                        except IndexError:
                             self.kill()
-                        self.manager.followOption(box[0])
         
     def wrap(this, input):
         linelen = 45
@@ -99,7 +99,6 @@ class DialogFrame(StackFrame):
         if len(options) == 0:
             # No  more places to go
             options.append("(walk away)")
-            self.exitFlag = True
 
 
         # Draw the current response

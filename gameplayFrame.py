@@ -55,6 +55,7 @@ class GameplayFrame(StackFrame):
     def poll(self):
         super(GameplayFrame, self).poll()
     
+        self.inputDict['act']  = False
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key in (K_UP, K_w):

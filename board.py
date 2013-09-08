@@ -226,7 +226,6 @@ class Player(Creature):
     def interact(self, board, stack, window):
         self.interactTime = self.speed
         ispace = super(Player, self).interact(board)
-
         if ispace:
             for entity in ispace.contents:
                 if isinstance(entity, Creature):
@@ -234,7 +233,6 @@ class Player(Creature):
                 if isinstance(entity, Clerk):
                     clerkDialogManager = DialogManager(entity.conversation)
                     stack.append(DialogFrame(stack, window, clerkDialogManager, playerImage='media/avatars/prot_shitty.png', npcImage='media/avatars/never_use.png'))
-
 
 class Enemy(Creature):
 
