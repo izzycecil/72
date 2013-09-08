@@ -17,11 +17,12 @@ def initSound():
     pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
 
 def gameFrame(window, stack):
-    b = Board(None, filename="media/maps/test")
+    # b = Board(None, filename='media/maps/test')
+    b = Board((10, 10))
     
-    # for x in range(0,10):
-        # for y in range(0,10):
-            # b.spaces[x][y] = Tile('media/rhombus.png', [])
+    for x in range(0,10):
+        for y in range(0,10):
+            b.spaces[x][y] = Tile('media/rhombus.png', [])
 
     p = Player(None, None, None, None, None, 4)
     b.placeEntity(p, 3, 4)

@@ -23,8 +23,9 @@ class Board(object):
 
     def load(self, filename):
         self.spaces = loadMap(filename)
-        self.xDim = len(self.spaces[0])
-        self.yDim = len(self.spaces)
+        self.xDim = len(self.spaces) - 1
+        self.yDim = len(self.spaces[0]) - 1
+        print "xDim:"+str(self.xDim)+"yDim:"+str(self.yDim)
         self.dim = (self.xDim, self.yDim)
 
     def render(self, window):
