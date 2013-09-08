@@ -9,5 +9,4 @@ class Tile(object):
     def render(self, window, pos):
         window.blit(self.image, pos)
         if self.contents:
-            for content in self.contents:
-                content.render(window)
+            return self.contents

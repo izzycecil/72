@@ -1,11 +1,12 @@
 from random import random
 
 import pygame
-from   pygame.locals import *
-from   mapAux        import loadMap
-from   tile          import Tile
-from   dialogue      import DialogManager
-from   dialogFrame   import DialogFrame
+from   pygame.locals    import *
+from   mapAux           import loadMap
+from   tile             import Tile
+from   dialogue         import DialogManager
+from   dialogFrame      import DialogFrame
+from   animationRender  import Animation
 
 class Board(object):
     tileWidth  = 80
@@ -14,7 +15,7 @@ class Board(object):
     def __init__(self, dim, filename=None):
         if filename is not None:
             self.load(filename)
-            return
+            returns
         self.dim    = dim
         self.xDim   = dim[0]
         self.yDim   = dim[1]
@@ -30,12 +31,17 @@ class Board(object):
         self.dim = (self.xDim, self.yDim)
 
     def render(self, window):
+        contents = []
         for y in range(0, self.yDim):
             for x in range(0, self.xDim):
                 if self.spaces[x][y]:
                     plotx, ploty = Board.getCoord(x,y)
                     self.spaces[x][y].render(window, (plotx, ploty))
+                    contents += self.spaces[x][y].contents
 
+        for content in contents:
+            content.render(window, content.getRealCoord())
+    
     def placeEntity(self, entity, x, y):
         if self.spaces[x][y]:
             entity.posX  = x
@@ -58,13 +64,15 @@ class Board(object):
         return plotx, ploty
 
 
+"""
+this takes the board directions and converts them
+into the numerical directions used by the animations
+"""
+directionDict = {'up':1, 'down':5, 'left':3, 'right':7}
+
 class Entity(object):
 
     def __init__(self, posX, posY, passable):
-        """
-        position -- board co-ord
-        passable -- boolean for if can be walked through
-        """
         self.posX     = posX
         self.posY     = posY
         self.passable = passable
@@ -81,8 +89,23 @@ class Entity(object):
     def getRight(self):
         return (0 if self.posY % 2 == 0 else 1, -1)
 
+class RenderEntity(Entity):
+
+    def __init__(self, posX, posY, passable):
+        super(RenderEntity, self).__init__(posX, posY, passable)
+        
+    def enableRender(self, path='media/animations/player/', positions=['idle', 'punch', 'walk']):
+        self.animation = Animation(path, positions)
+        
+    def render(self, buffer, (xPos, yPos)):
+        if hasattr(self, 'animation'):
+            self.animation.render(buffer,(xPos, yPos))
     
-class Creature(Entity):
+    def update(self):
+        if hasattr(self, 'animation'):
+            self.animation.update()
+    
+class Creature(RenderEntity):
 
     def __init__(self, health, strength, posX, posY, direction, speed):
         super(Creature, self).__init__(posX, posY, False)
@@ -95,9 +118,10 @@ class Creature(Entity):
         self.transit   = 0
         self.interactTime = 0  
 
-
     def move(self, dx, dy, board):
         if self.transit == 0:
+            if hasattr(self, 'animation'):
+                self.animation.doNext('walk', directionDict[self.direction])
             self.transit = self.speed
             self.prevX   = self.posX
             self.prevY   = self.posY
@@ -135,8 +159,8 @@ class Creature(Entity):
         x,y = self.getRight()
         self.direction = 'right'
         self.move(x,y,board)
-
-    def render(self, window):
+        
+    def getRealCoord(self):
         ptransit       = (self.speed - self.transit) / float(self.speed)
         splotx, sploty = Board.getCoord(self.prevX, self.prevY)
         eplotx, eploty = Board.getCoord(self.posX, self.posY)
@@ -146,12 +170,12 @@ class Creature(Entity):
         eploty += Board.tileHeight/2
         plotx = int(splotx + (eplotx - splotx) * ptransit)
         ploty = int(sploty + (eploty - sploty) * ptransit)
-        pygame.draw.circle(window, 
-                           pygame.Color(0,255,0), 
-                           (plotx, ploty), 
-                           5)
+
+        return plotx, ploty
 
     def update(self, gameFrame):
+        super(Creature, self).update()
+    
         if self.transit > 0:
             self.transit -= 1
         if self.interactTime > 0:
@@ -176,6 +200,9 @@ class Creature(Entity):
             return None
 
     def attack(self, creature, board):
+        if hasattr(self, 'animation'):
+            self.animation.doNext('punch', directionDict[self.direction])
+    
         dmg = int(random() * self.strength)
         creature.health -= dmg
         if creature.health <= 0:
@@ -190,21 +217,6 @@ class Player(Creature):
         super(Player, self).__init__(health, strength, 
                                      posX, posY, direction, 
                                      speed)
-        
-    def render(self, window):
-        ptransit       = (self.speed - self.transit) / float(self.speed)
-        splotx, sploty = Board.getCoord(self.prevX, self.prevY)
-        eplotx, eploty = Board.getCoord(self.posX, self.posY)
-        splotx += Board.tileWidth/2
-        sploty += Board.tileHeight/2
-        eplotx += Board.tileWidth/2
-        eploty += Board.tileHeight/2
-        plotx = int(splotx + (eplotx - splotx) * ptransit)
-        ploty = int(sploty + (eploty - sploty) * ptransit)
-        pygame.draw.circle(window, 
-                           pygame.Color(0,0,255), 
-                           (plotx, ploty), 
-                           5)
 
     def update(self, gameFrame):
         super(Player, self).update(gameFrame)
@@ -219,7 +231,6 @@ class Player(Creature):
         elif inputs['down']:
             self.moveDown(gameFrame.board)
         
-        
         if inputs['act'] and self.interactTime == 0:
             self.interact(gameFrame.board, gameFrame.stack, gameFrame.window)
 
@@ -231,9 +242,7 @@ class Player(Creature):
                 if isinstance(entity, Creature):
                     self.attack(entity, board)
                 if isinstance(entity, Clerk):
-                    clerkDialogManager = DialogManager(entity.conversation)
-                    stack.append(DialogFrame(stack, window, clerkDialogManager, playerImage='media/avatars/prot_shitty.png', npcImage='media/avatars/never_use.png'))
-
+                    stack.append(entity.conversation)
 class Enemy(Creature):
 
         def __init__(self, health, strength, posX, posY, direction, speed):
