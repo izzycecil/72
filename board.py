@@ -4,6 +4,8 @@ import pygame
 from   pygame.locals import *
 from   mapAux        import loadMap
 from   tile          import Tile
+from   dialogue      import DialogManager
+from   dialogFrame   import dialogFrame
 
 class Board(object):
     tileWidth  = 80
@@ -228,3 +230,6 @@ class Player(Creature):
             for entity in ispace.contents:
                 if isinstance(entity, Creature):
                     self.attack(entity, board)
+                if isinstance(entity, Clerk):
+                    clerkDialogManager = DialogManager('redneck')
+                    self.stack.append(dialogFrame(self.stack, self.window, clerkDialogManager, playerImage='media/avatars/prot_shitty.png', npcImage='media/avatars/never_use.png'))
