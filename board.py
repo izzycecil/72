@@ -68,7 +68,7 @@ class Board(object):
 this takes the board directions and converts them
 into the numerical directions used by the animations
 """
-directionDict = {'up':1, 'down':5, 'left':3, 'right':7}
+directionDict = {'up':7, 'down':3, 'left':5, 'right':1}
 
 class Entity(object):
 
@@ -246,15 +246,12 @@ class Player(Creature):
     def interact(self, board, stack, window):
         self.interactTime = self.speed
         ispace = super(Player, self).interact(board)
-
         if ispace:
             for entity in ispace.contents:
                 if isinstance(entity, Creature):
                     self.attack(entity, board)
                 if isinstance(entity, Clerk):
-
                     stack.append(entity.conversation)
-
 class Enemy(Creature):
 
     def __init__(self, health, strength, posX, posY, direction, speed):
