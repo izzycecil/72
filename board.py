@@ -15,7 +15,7 @@ class Board(object):
     def __init__(self, dim, filename=None):
         if filename is not None:
             self.load(filename)
-            returns
+            return
         self.dim    = dim
         self.xDim   = dim[0]
         self.yDim   = dim[1]
@@ -68,7 +68,7 @@ class Board(object):
 this takes the board directions and converts them
 into the numerical directions used by the animations
 """
-directionDict = {'up':1, 'down':5, 'left':3, 'right':7}
+directionDict = {'up':7, 'down':3, 'left':5, 'right':1}
 
 class Entity(object):
 
@@ -117,6 +117,15 @@ class Creature(RenderEntity):
         self.prevY     = self.posY
         self.transit   = 0
         self.interactTime = 0  
+        self.walk_sound   = []
+        self.attack_sound = ['media/enemy/fight1.wav',
+                             'media/enemy/fight2.wav',
+                             'media/enemy/fight3.wav']
+        
+        self.hurt_sound   = ['media/Hit\ Response/ouch1.wav',
+                             'media/Hit\ Response/ouch2.wav',
+                             'media/Hit\ Response/ouch3.wav',]
+
 
     def move(self, dx, dy, board):
         if self.transit == 0:
@@ -247,56 +256,56 @@ class Player(Creature):
 
 class Enemy(Creature):
 
-        def __init__(self, health, strength, posX, posY, direction, speed):
-                super(Enemy, self).__init__(health, strength, posX, posY, direction, speed)
+    def __init__(self, health, strength, posX, posY, direction, speed):
+        super(Enemy, self).__init__(health, strength, posX, posY, direction, speed)
 
-        def update(self, gameFrame):
-                board  = gameFrame.board
-                player = gameFrame.player
-                
-                if self.transit > 0:
-                        self.transit -= 1
-
-                dx = self.posX - player.posX
-                dy = self.posY - player.posY
+    def update(self, gameFrame):
+        board  = gameFrame.board
+        player = gameFrame.player
         
-                if dx > 0 and dy >0:
-                        self.moveUp(board)
-                elif dx < 0 and dy < 0:
-                        self.moveDown(board)
-                elif dx > 0 and dy == 0:
-                        self.moveUp(board)
-                elif dy > 0 and dx == 0:
-                        self.moveRight(board)
-                elif dy < 0:
-                        self.moveLeft(board)
-                elif dx <0:
-                        self.moveRight(board)
-                else:
-                        print 'NOTHING HAPPENED!'
+        if self.transit > 0:
+            self.transit -= 1
+            
+        dx = self.posX - player.posX
+        dy = self.posY - player.posY
+        
+        if dx > 0 and dy >0:
+            self.moveUp(board)
+        elif dx < 0 and dy < 0:
+            self.moveDown(board)
+        elif dx > 0 and dy == 0:
+            self.moveUp(board)
+        elif dy > 0 and dx == 0:
+            self.moveRight(board)
+        elif dy < 0:
+            self.moveLeft(board)
+        elif dx <0:
+            self.moveRight(board)
+        else:
+            print 'NOTHING HAPPENED!'
                 
 
-        def interact(self, board):
-                if self.direction == 'up':
-                        dx,dy = self.getUp()
-                if self.direction == 'down':
-                        dx,dy = self.getDown()
-                if self.direction == 'left':
-                        dx,dy = self.getLeft()
-                if self.direction == 'right':
-                        dx,dy = self.getRight()
+    def interact(self, board):
+        if self.direction == 'up':
+            dx,dy = self.getUp()
+        if self.direction == 'down':
+            dx,dy = self.getDown()
+        if self.direction == 'left':
+            dx,dy = self.getLeft()
+        if self.direction == 'right':
+            dx,dy = self.getRight()
 
 class Clerk(Creature):
         
     def __init__(self, posX, posY, direction, conversation):
-                super(Clerk, self).__init__(400, 0, posX, posY, direction, 1)
-                self.conversation = conversation
+        super(Clerk, self).__init__(400, 0, posX, posY, direction, 1)
+        self.conversation = conversation
 
     def converse(self):
-                pass
-
+        pass
+                
     def update(self, board):
-                pass
+        pass
                 
         
 
