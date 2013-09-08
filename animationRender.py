@@ -23,7 +23,7 @@ class Animation(object):
         #check this
         if self.next is not self.doing and self.currentFrame == 0:
             self.doing = self.doNext
-            self.doNext = self.sprite.getFrames('idle', self.nextDirection)
+            self.next = self.sprite.getFrames('idle', self.nextDirection)
 
         self.currentFrame = (self.currentFrame + 1) % len(self.doing)
 
