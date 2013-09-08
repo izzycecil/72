@@ -46,9 +46,9 @@ class DialogFrame(StackFrame):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 xPos = event.pos[0] - self.promptPosition[0] # move these coordinates in to our canvas
                 yPos = event.pos[1] - self.promptPosition[1]
-                for i, box in enumerate(self.boxes):
-                    if xPos > box.left and xPos < box.right and yPos > box.top and yPos < box.bottom:
-                        self.manager.followOption(i)
+                for box in self.boxes:
+                    if xPos > box[1].left and xPos < box[1].right and yPos > box[1].top and yPos < box[1].bottom:
+                        self.manager.followOption(box[0])
         
     def wrap(this, input):
         linelen = 45
@@ -106,11 +106,13 @@ class DialogFrame(StackFrame):
         self.boxes = []
         vertPos = 10
         for i,option in enumerate(options):
-            otext = font.render(option, 1, (200,200,255))
-            otextPos = otext.get_rect().move(10,vertPos)
-            self.promptSurface.blit(otext, otextPos)
-            vertPos += 20
-            self.boxes.append(otextPos)
+            for line in self.wrap(option):
+                otext = font.render(line, 1, (200,200,255))
+                otextPos = otext.get_rect().move(10,vertPos)
+                self.promptSurface.blit(otext, otextPos)
+                vertPos += 16
+                self.boxes.append((i, otextPos))
+            vertPos += 6
 
     def paint(self):
         self.window.blit(self.responseSurface, self.responsePosition)
