@@ -33,8 +33,9 @@ class GameplayFrame(StackFrame):
         self.cameraY = 0
         self.dxMin   = GameplayFrame.camBoxTrim
         self.dyMin   = GameplayFrame.camBoxTrim
-        self.dxMax   = window.get_width() - GameplayFrame.camBoxTrim - 60
+        self.dxMax   = window.get_width() - GameplayFrame.camBoxTrim #- 60
         self.dyMax   = window.get_height() - GameplayFrame.camBoxTrim
+        
         
     def updateCam(self):
         px, py = self.player.getRealCoord()
@@ -44,12 +45,12 @@ class GameplayFrame(StackFrame):
         if dx < self.dxMin:
             self.cameraX = -1*(px - self.dxMin)
         elif dx > self.dxMax:
-            self.cameraX = -1*(px + self.dxMax)
+            self.cameraX = -1 * (px - self.dxMax - 0 * GameplayFrame.camBoxTrim)
 
         if dy < self.dyMin:
             self.cameraY = -1*(py - self.dyMin)
         elif dy > self.dyMax:
-            self.cameraY = -1*(py + self.dyMax)
+            self.cameraY = -1 * (py - self.dyMax - 0 * GameplayFrame.camBoxTrim)
 
     def poll(self):
         super(GameplayFrame, self).poll()
