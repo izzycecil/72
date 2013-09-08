@@ -5,7 +5,7 @@ from   pygame.locals import *
 from   mapAux        import loadMap
 from   tile          import Tile
 from   dialogue      import DialogManager
-from   dialogFrame   import dialogFrame
+from   dialogFrame   import DialogFrame
 
 class Board(object):
     tileWidth  = 80
@@ -56,6 +56,7 @@ class Board(object):
         plotx = 10 + x*Board.tileWidth + (y&1)*(Board.tileHeight/2)   
         ploty = 10 + (y*(Board.tileHeight/2))/2
         return plotx, ploty
+
 
 class Entity(object):
 
@@ -220,9 +221,9 @@ class Player(Creature):
         
         
         if inputs['act'] and self.interactTime == 0:
-            self.interact(gameFrame.board)
+            self.interact(gameFrame.board, gameFrame.stack, gameFrame.window)
 
-    def interact(self, board):
+    def interact(self, board, stack, window):
         self.interactTime = self.speed
         ispace = super(Player, self).interact(board)
 
@@ -231,5 +232,62 @@ class Player(Creature):
                 if isinstance(entity, Creature):
                     self.attack(entity, board)
                 if isinstance(entity, Clerk):
-                    clerkDialogManager = DialogManager('redneck')
-                    self.stack.append(dialogFrame(self.stack, self.window, clerkDialogManager, playerImage='media/avatars/prot_shitty.png', npcImage='media/avatars/never_use.png'))
+                    clerkDialogManager = DialogManager(entity.conversation)
+                    stack.append(DialogFrame(stack, window, clerkDialogManager, playerImage='media/avatars/prot_shitty.png', npcImage='media/avatars/never_use.png'))
+
+
+class Enemy(Creature):
+
+        def __init__(self, health, strength, posX, posY, direction, speed):
+                super(Enemy, self).__init__(health, strength, posX, posY, direction, speed)
+
+        def update(self, gameFrame):
+                board  = gameFrame.board
+                player = gameFrame.player
+                
+                if self.transit > 0:
+                        self.transit -= 1
+
+                dx = self.posX - player.posX
+                dy = self.posY - player.posY
+        
+                if dx > 0 and dy >0:
+                        self.moveUp(board)
+                elif dx < 0 and dy < 0:
+                        self.moveDown(board)
+                elif dx > 0 and dy == 0:
+                        self.moveUp(board)
+                elif dy > 0 and dx == 0:
+                        self.moveRight(board)
+                elif dy < 0:
+                        self.moveLeft(board)
+                elif dx <0:
+                        self.moveRight(board)
+                else:
+                        print 'NOTHING HAPPENED!'
+                
+
+        def interact(self, board):
+                if self.direction == 'up':
+                        dx,dy = self.getUp()
+                if self.direction == 'down':
+                        dx,dy = self.getDown()
+                if self.direction == 'left':
+                        dx,dy = self.getLeft()
+                if self.direction == 'right':
+                        dx,dy = self.getRight()
+
+class Clerk(Creature):
+        
+    def __init__(self, posX, posY, direction, conversation):
+                super(Clerk, self).__init__(400, 0, posX, posY, direction, 1)
+                self.conversation = conversation
+
+    def converse(self):
+                pass
+
+    def update(self, board):
+                pass
+                
+        
+

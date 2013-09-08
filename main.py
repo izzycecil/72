@@ -4,8 +4,7 @@ import pygame, sys
 from pygame.locals import *
 
 from stackframe     import StackFrame, runStack
-from board          import Board, Creature, Player, Tile
-from entityAux      import Enemy, Clerk
+from board          import Board, Tile, Enemy, Clerk, Creature, Player
 from gameplayFrame  import GameplayFrame
 from menuFrame      import MenuTree
 from menus          import gameMenuTree, mainMenuTree
@@ -21,7 +20,6 @@ def initSound():
 
 def gameFrame(window, stack):
     # b = Board(None, filename='media/maps/test')
-    b = Board((10, 10))
     
     b = Board((20,20))
 
@@ -31,17 +29,8 @@ def gameFrame(window, stack):
 
     p = Player(20, 10, None, None, None, 4)
     b.placeEntity(p, 3, 4)
-    b.placeEntity(Enemy(20, 10, None, None, None, 10), 5,5)
+    b.placeEntity(Clerk(20, 10, None, 'redneck'), 5,5)
 
-    return GameplayFrame(None, window, b, p)
-
-    for x in range(0,10):
-        for y in range(0,10):
-            b.spaces[x][y] = Tile('media/shittytesttile.png', [])
-
-    p = Player(None, None, None, None, None, 4)
-    b.placeEntity(p, 3, 4)
-    
     return GameplayFrame(stack, window, b, p)
     
 def main():

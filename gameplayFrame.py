@@ -3,8 +3,7 @@
 import pygame
 from pygame.locals import *
 
-from board      import Board, Creature, Tile, Player
-from entityAux  import Enemy
+from board      import Board, Tile, Enemy, Creature, Player
 from stackframe import StackFrame, runStack
 from menus      import gameMenuTree
 
