@@ -40,7 +40,7 @@ class Board(object):
                     contents += self.spaces[x][y].contents
 
         for content in contents:
-            content.render(window)
+            content.render(window, content.getRealCoord())
     
     def placeEntity(self, entity, x, y):
         if self.spaces[x][y]:
@@ -171,7 +171,6 @@ class Creature(RenderEntity):
         plotx = int(splotx + (eplotx - splotx) * ptransit)
         ploty = int(sploty + (eploty - sploty) * ptransit)
 
-        super(Creature, self).render(window, (plotx, ploty))
         return plotx, ploty
 
     def update(self, gameFrame):
