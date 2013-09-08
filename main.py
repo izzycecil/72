@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import pygame, sys
 from pygame.locals import *
 
@@ -5,7 +7,7 @@ from stackframe     import StackFrame, runStack
 from board          import Board, Creature, Player, Tile
 from gameplayFrame  import GameplayFrame
 from menuFrame      import MenuTree
-from menus          import mainMenuTree, mainMenuTree
+from menus          import gameMenuTree, mainMenuTree
 
 def initGraphics():
     pygame.init()

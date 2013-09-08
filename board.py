@@ -176,13 +176,13 @@ class Creature(Entity):
             print 'NOTHING HAPPENED!'
             
     def interact(self, board):
-        if self.direction = 'up':
+        if self.direction == 'up':
             dx,dy = self.getUp()
-        if self.direction = 'down':
+        if self.direction == 'down':
             dx,dy = self.getDown()
-        if self.direction = 'left':
+        if self.direction == 'left':
             dx,dy = self.getLeft()
-        if self.direction = 'right':
+        if self.direction == 'right':
             dx,dy = self.getRight()
 
         itile = board.spaces
