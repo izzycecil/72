@@ -5,6 +5,7 @@ from pygame.locals import *
 
 from stackframe     import StackFrame, runStack
 from board          import Board, Creature, Player, Tile
+from entityAux      import Enemy, Clerk
 from gameplayFrame  import GameplayFrame
 from menuFrame      import MenuTree
 from menus          import gameMenuTree, mainMenuTree
@@ -22,6 +23,18 @@ def gameFrame(window, stack):
     # b = Board(None, filename='media/maps/test')
     b = Board((10, 10))
     
+    b = Board((20,20))
+
+    for x in range(0,20):
+        for y in range(0,20):
+            b.spaces[x][y] = Tile('media/tileproto1.png', [])
+
+    p = Player(20, 10, None, None, None, 4)
+    b.placeEntity(p, 3, 4)
+    b.placeEntity(Enemy(20, 10, None, None, None, 10), 5,5)
+
+    return GameplayFrame(None, window, b, p)
+
     for x in range(0,10):
         for y in range(0,10):
             b.spaces[x][y] = Tile('media/shittytesttile.png', [])
