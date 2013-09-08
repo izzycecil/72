@@ -203,12 +203,17 @@ class Creature(RenderEntity):
         destX = self.posX + dx
         destY = self.posY + dy
 
+        r = random()
+
+        pygame.mixer.Sound(self.attack_sound[int(r*len(self.attack_sound))])
+        
         if destX in range(0, board.xDim) and destY in range(0,board.yDim):
             return board.spaces[destX][destY]
         else:
             return None
 
     def attack(self, creature, board):
+
         if hasattr(self, 'animation'):
             self.animation.doNext('punch', directionDict[self.direction])
     
@@ -218,6 +223,8 @@ class Creature(RenderEntity):
             creature.die(board)
 
     def die(self, board):
+        r = random()
+        pygame.mixer.Sound(self.hurt_sound[int(r*len(self.hurt_sound))])
         board.spaces[self.posX][self.posY].contents.remove(self)
         
 
