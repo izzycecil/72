@@ -22,7 +22,7 @@ def gameFrame(window, stack):
     
     for x in range(0,10):
         for y in range(0,10):
-            b.spaces[x][y] = Tile('media/rhombus.png', [])
+            b.spaces[x][y] = Tile('media/shittytesttile.png', [])
 
     p = Player(None, None, None, None, None, 4)
     b.placeEntity(p, 3, 4)

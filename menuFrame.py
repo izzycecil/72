@@ -2,11 +2,9 @@ import pygame
 
 from stackframe import StackFrame, runStack
 
-# class MenuItem(pygame.font.Font):
-
 class Menu(StackFrame):
         
-    def __init__(self, stack, window, items, position=None, background=None, color=None, highlighting=None, renderOver=None, music=None):
+    def __init__(self, stack, window, items, position=None, background=None, color=None, highlighting=None, renderOver=None, font=None, music=None):
         super(Menu, self).__init__(stack, window, renderOver, music)
         if position is None:
             self.position = pygame.Rect((0, 0), (window.get_width(), window.get_height()))
@@ -22,6 +20,8 @@ class Menu(StackFrame):
             self.color = color
         if highlighting is not None:
             self.highlighting = highlighting
+            
+        self.font = font
         
     def poll(self):
         super(Menu, self).poll()
@@ -48,8 +48,7 @@ class Menu(StackFrame):
     
         fontSize = 36
         fontSpace = 4
-        # use the default font
-        font = pygame.font.Font(None, fontSize)
+        font = pygame.font.Font(self.font, fontSize)
         
         subHeight = (fontSize + fontSpace) * len(self.items)
         subHeightStart = self.surface.get_height() / 2 - subHeight / 2
@@ -83,10 +82,10 @@ class Menu(StackFrame):
         
 class MenuTree(Menu):
     
-    def __init__(self, stack, window, items, position=None, background=None, color=None, highlighting=None, renderOver=None, music=None):
+    def __init__(self, stack, window, items, position=None, background=None, color=None, highlighting=None, renderOver=None, font=None, music=None):
         for item in items:
             if type(item[1]) is type([]):
                 item[1].append(["Return", None])
-                item[1] = MenuTree(stack, window, item[1], position, background, color, highlighting, renderOver)
+                item[1] = MenuTree(stack, window, item[1], position, background, color, highlighting, renderOver, font)
         
-        super(MenuTree, self).__init__(stack, window, items, position, background, color, highlighting, renderOver, music)
+        super(MenuTree, self).__init__(stack, window, items, position, background, color, highlighting, renderOver, font, music)
