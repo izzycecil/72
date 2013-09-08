@@ -6,7 +6,7 @@ from menuFrame  import MenuTree
 def mainMenuTree(stack, window, playFrame):
     # mainMenu = MenuTree(stack, window, [["Play", playFrame], ["Options", [["Quit", sys.exit], ["Done", sys.exit]]]], \
                         # pygame.Rect((0, 0), (600, 600)), highlighting=(250, 100, 100),                          \
-                        # background="media/bg.png", music="media/music.wav")
+                        # background="media/titlescrn.png", music="media/music.wav")
                         
     mainMenu = MenuTree(stack, window, [["Play", playFrame], ["Options", [["Quit", sys.exit], ["Done", sys.exit]]]], \
                         pygame.Rect((0, 0), (600, 600)), highlighting=(250, 100, 100),                          \
