@@ -11,7 +11,6 @@ class GameplayFrame(StackFrame):
 
     updateMod  = 8
     camBoxTrim = 60
-    camSpeed   = 10
 
     def __init__(self, stack, window, board, player):
         super(GameplayFrame, self).__init__(stack, window)
@@ -38,19 +37,19 @@ class GameplayFrame(StackFrame):
         self.dyMax   = window.get_height() - GameplayFrame.camBoxTrim
         
     def updateCam(self):
-        px, py = Board.getCoord(self.player.posX, self.player.posY)
+        px, py = self.player.getRealCoord()
         dx = px + self.cameraX
         dy = py + self.cameraY
         
         if dx < self.dxMin:
-            self.cameraX += GameplayFrame.camSpeed
+            self.cameraX = -1*(px - self.dxMin)
         elif dx > self.dxMax:
-            self.cameraX -= GameplayFrame.camSpeed
+            self.cameraX = -1*(px + self.dxMax)
 
         if dy < self.dyMin:
-            self.cameraY += GameplayFrame.camSpeed
+            self.cameraY = -1*(py - self.dyMin)
         elif dy > self.dyMax:
-            self.cameraY -= GameplayFrame.camSpeed
+            self.cameraY = -1*(py + self.dyMax)
 
     def poll(self):
         super(GameplayFrame, self).poll()

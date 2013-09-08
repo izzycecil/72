@@ -159,8 +159,8 @@ class Creature(RenderEntity):
         x,y = self.getRight()
         self.direction = 'right'
         self.move(x,y,board)
-
-    def render(self, window):
+        
+    def getRealCoord(self):
         ptransit       = (self.speed - self.transit) / float(self.speed)
         splotx, sploty = Board.getCoord(self.prevX, self.prevY)
         eplotx, eploty = Board.getCoord(self.posX, self.posY)
@@ -172,6 +172,7 @@ class Creature(RenderEntity):
         ploty = int(sploty + (eploty - sploty) * ptransit)
 
         super(Creature, self).render(window, (plotx, ploty))
+        return plotx, ploty
 
     def update(self, gameFrame):
         super(Creature, self).update()
