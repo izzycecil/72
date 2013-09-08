@@ -25,8 +25,12 @@ class Animation(object):
             self.doing = self.next
             self.next = self.sprite.getFrames('idle', self.nextDirection)
 
-        self.currentFrame = (self.currentFrame + 1) % len(self.doing)
-
+        try:
+            self.currentFrame = (self.currentFrame + 1) % len(self.doing)
+        except:
+            self.currentFrame = 0
+            self.next = self.sprite.getFrames('idle', self.nextDirection)
+        
     def render(self, buffer, (xPos, yPos)):
-        self.doingRect.move_ip((xPos - self.doingRect.width / 2, yPos - self.doingRect.height / 2))
-        buffer.blit(self.doing[self.currentFrame], self.doingRect)
+        tempRect = self.doingRect.move((xPos - self.doingRect.width / 2, yPos - self.doingRect.height / 2))
+        buffer.blit(self.doing[self.currentFrame], tempRect)
