@@ -237,15 +237,12 @@ class Player(Creature):
     def interact(self, board, stack, window):
         self.interactTime = self.speed
         ispace = super(Player, self).interact(board)
-
         if ispace:
             for entity in ispace.contents:
                 if isinstance(entity, Creature):
                     self.attack(entity, board)
                 if isinstance(entity, Clerk):
-
                     stack.append(entity.conversation)
-
 class Enemy(Creature):
 
         def __init__(self, health, strength, posX, posY, direction, speed):
