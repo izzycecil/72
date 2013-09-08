@@ -47,7 +47,7 @@ class RenderEntity(Entity):
         if hasattr(self, 'animation'):
             self.animation.update()
         
-class RenderCreature(RenderEntity):
+class Creature(RenderEntity):
 
     def __init__(self, health, strength, posX, posY, direction, speed):
         super(Creature, self).__init__(posX, posY, False)
@@ -62,7 +62,8 @@ class RenderCreature(RenderEntity):
 
     def move(self, dx, dy, board):
         if self.transit == 0:
-            
+            if hasattr(self, 'animation'):
+                self.animation.doNext('walk', directionDict[self.direction])
         
             self.transit = self.speed
             self.prevX   = self.posX
@@ -142,6 +143,9 @@ class RenderCreature(RenderEntity):
             return None
 
     def attack(self, creature, board):
+        if hasattr(self, 'animation'):
+            self.animation.doNext('punch', directionDict[self.direction])
+    
         dmg = int(random() * self.strength)
         creature.health -= dmg
         if creature.health <= 0:
@@ -150,4 +154,51 @@ class RenderCreature(RenderEntity):
     def die(self, board):
         board.spaces[self.posX][self.posY].contents.remove(self)
     
+class Player(Creature):
+    def __init__(self, health, strength, posX, posY, direction, speed):
+        super(Player, self).__init__(health, strength, 
+                                     posX, posY, direction, 
+                                     speed)
     
+    def render(self, window):
+        ptransit       = (self.speed - self.transit) / float(self.speed)
+        splotx, sploty = Board.getCoord(self.prevX, self.prevY)
+        eplotx, eploty = Board.getCoord(self.posX, self.posY)
+        splotx += Board.tileWidth/2
+        sploty += Board.tileHeight/2
+        eplotx += Board.tileWidth/2
+        eploty += Board.tileHeight/2
+        plotx = int(splotx + (eplotx - splotx) * ptransit)
+        ploty = int(sploty + (eploty - sploty) * ptransit)
+        pygame.draw.circle(window, 
+                           pygame.Color(0,0,255), 
+                           (plotx, ploty), 
+                           5)
+
+    def update(self, gameFrame):
+        super(Player, self).update(gameFrame)
+        inputs = gameFrame.inputDict
+
+        if inputs['left']:
+            self.moveLeft(gameFrame.board)
+        elif inputs['right']:
+            self.moveRight(gameFrame.board)
+        elif inputs['up']:
+            self.moveUp(gameFrame.board)
+        elif inputs['down']:
+            self.moveDown(gameFrame.board)
+        
+        if inputs['act'] and self.interactTime == 0:
+            self.interact(gameFrame.board, gameFrame.stack, gameFrame.window)
+
+    def interact(self, board, stack, window):
+        self.interactTime = self.speed
+        ispace = super(Player, self).interact(board)
+
+        if ispace:
+            for entity in ispace.contents:
+                if isinstance(entity, Creature):
+                    self.attack(entity, board)
+                if isinstance(entity, Clerk):
+
+                    stack.append(entity.conversation)
