@@ -2,12 +2,17 @@ from random import random
 
 import pygame
 from   pygame.locals import *
+from   mapAux        import loadMap
+from   tile          import Tile
 
 class Board(object):
     tileWidth  = 40
     tileHeight = 40
 
-    def __init__(self, dim):
+    def __init__(self, dim, filename=None):
+        if filename is not None:
+            self.load(filename)
+            return
         self.dim    = dim
         self.xDim   = dim[0]
         self.yDim   = dim[1]
@@ -15,6 +20,12 @@ class Board(object):
             [None for x in range(0,dim[0])] 
             for x in range(0,dim[1])
         ]
+
+    def load(self, filename):
+        self.spaces = loadMap(filename)
+        self.xDim = len(self.spaces[0])
+        self.yDim = len(self.spaces)
+        self.dim = (self.xDim, self.yDim)
 
     def render(self, window):
         for y in range(0, self.yDim):
@@ -46,18 +57,6 @@ class Board(object):
         ploty = 10 + (y*(Board.tileHeight/2))/2
         return plotx, ploty
 
-class Tile(object):
-    def __init__(self, path, contents):
-        self._path    = path
-        self.contents = contents
-        self.image    = pygame.image.load(self._path)
-        
-    def render(self, window, pos):
-        window.blit(self.image, pos)
-        if self.contents:
-            for content in self.contents:
-                content.render(window)
-
 class Entity(object):
 
     def __init__(self, posX, posY, passable):
@@ -74,18 +73,6 @@ class Entity(object):
         entity --- entity to be acted on
         """
         pass
-
-    def getUp(self):
-        return (-1 if self.posY % 2 == 0 else 0, -1)
-        
-    def getDown(self):
-        return (1 if self.posY %2 == 1 else 0, 1)
-
-    def getLeft(self):
-        return (-1 if self.posY % 2 ==0 else 0, 1)
-
-    def getRight(self):
-        return (0 if self.posY % 2 == 0 else 1, -1)
 
     
 class Creature(Entity):
@@ -122,33 +109,29 @@ class Creature(Entity):
                 dest.contents.append(self)
 
     def moveUp(self, board):
-        x,y = self.getUp()
-        self.direction = 'up'
-        self.move(x,y,board)
+        self.move(
+            -1 if self.posY % 2 == 0  else 0, 
+            -1, board)
 
     def moveDown(self, board):
-        x,y = self.getDown()
-        self.direction = 'down'
-        self.move(x,y,board)
+        self.move(
+            1 if self.posY % 2 == 1  else 0, 
+            1, board)
 
     def moveLeft(self, board):
-        x,y = self.getLeft()
-        self.direction = 'left'
-        self.move(x,y,board)
+        self.move(
+            -1 if self.posY % 2 == 0  else 0, 
+            1, board)
 
     def moveRight(self, board):
-        x,y = self.getRight()
-        self.direction = 'right'
-        self.move(x,y,board)
+        self.move(
+            0 if self.posY % 2 == 0  else 1, 
+            -1, board)
 
     def render(self, window):
         ptransit       = (self.speed - self.transit) / float(self.speed)
         splotx, sploty = Board.getCoord(self.prevX, self.prevY)
         eplotx, eploty = Board.getCoord(self.posX, self.posY)
-        splotx += Board.tileWidth/2
-        sploty += Board.tileHeight/2
-        eplotx += Board.tileWidth/2
-        eploty += Board.tileHeight/2
         plotx = int(splotx + (eplotx - splotx) * ptransit)
         ploty = int(sploty + (eploty - sploty) * ptransit)
         pygame.draw.circle(window, 
@@ -219,4 +202,3 @@ class Player(Creature):
             self.moveUp(gameFrame.board)
         elif inputs['down']:
             self.moveDown(gameFrame.board)
-                
