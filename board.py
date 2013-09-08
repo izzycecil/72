@@ -25,7 +25,6 @@ class Board(object):
         self.spaces = loadMap(filename)
         self.xDim = len(self.spaces) - 1
         self.yDim = len(self.spaces[0]) - 1
-        print "xDim:"+str(self.xDim)+"yDim:"+str(self.yDim)
         self.dim = (self.xDim, self.yDim)
 
     def render(self, window):
@@ -52,8 +51,6 @@ class Board(object):
                         content.update(gameFrame)
     @staticmethod
     def getCoord(x, y):
-        if x == None or y == None:
-            print 'WHAT THE LIVING FUCK?'
         plotx = 10 + x*Board.tileWidth + (y&1)*(Board.tileHeight/2)   
         ploty = 10 + (y*(Board.tileHeight/2))/2
         return plotx, ploty
@@ -152,29 +149,10 @@ class Creature(Entity):
                            5)
 
     def update(self, gameFrame):
-        board  = gameFrame.board
-        player = gameFrame.player
-
         if self.transit > 0:
             self.transit -= 1
-
-        dx = self.posX - player.posX
-        dy = self.posY - player.posY
-        
-        if dx > 0 and dy >0:
-            self.moveUp(board)
-        elif dx < 0 and dy < 0:
-            self.moveDown(board)
-        elif dx > 0 and dy == 0:
-            self.moveUp(board)
-        elif dy > 0 and dx == 0:
-            self.moveRight(board)
-        elif dy < 0:
-            self.moveLeft(board)
-        elif dx <0:
-            self.moveRight(board)
-        else:
-            print 'NOTHING HAPPENED!'
+        if self.interactTime > 0:
+            self.interactTime -= 1
             
     def interact(self, board):
         if self.direction == 'up':
@@ -186,7 +164,22 @@ class Creature(Entity):
         if self.direction == 'right':
             dx,dy = self.getRight()
 
-        itile = board.spaces
+        destX = self.posX + dx
+        destY = self.posY + dy
+
+        if destX in range(0, board.xDim) and destY in range(0,board.yDim):
+            return board.spaces[destX][destY]
+        else:
+            return None
+
+    def attack(self, creature, board):
+        dmg = int(random() * self.strength)
+        creature.health -= dmg
+        if creature.health <= 0:
+            creature.die(board)
+
+    def die(self, board):
+        board.spaces[self.posX][self.posY].contents.remove(self)
         
 
 class Player(Creature):
@@ -211,13 +204,8 @@ class Player(Creature):
                            5)
 
     def update(self, gameFrame):
+        super(Player, self).update(gameFrame)
         inputs = gameFrame.inputDict
-
-        if self.transit > 0:
-            self.transit -= 1
-
-        if self.interactTime > 0:
-            self.interactTime -= 1
 
         if inputs['left']:
             self.moveLeft(gameFrame.board)
@@ -230,24 +218,13 @@ class Player(Creature):
         
         
         if inputs['act'] and self.interactTime == 0:
-            self.interact()
+            self.interact(gameFrame.board)
 
-    def interact(self):
-        if self. direction = 'up':
-            dx,dy = self.getUp()
-        if self. direction = 'down':
-            dx,dy = self.getDown()
-        if self. direction = 'left':
-            dx,dy = self.getLeft()
-        if self. direction = 'right':
-            dx,dy = self.getRight()
+    def interact(self, board):
+        self.interactTime = self.speed
+        ispace = super(Player, self).interact(board)
 
-        if destX in range(0, board.xDim) and destY in range(0,board.yDim):
-                ispace = board.spaces[destX][destY]
-            else:
-                return
-
-
-        for entity in ispace.contents:
-            if isinstance(entity, Creature):
-                self.attack(entity)
+        if ispace:
+            for entity in ispace.contents:
+                if isinstance(entity, Creature):
+                    self.attack(entity, board)
