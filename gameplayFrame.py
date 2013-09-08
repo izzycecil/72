@@ -16,7 +16,7 @@ class GameplayFrame(StackFrame):
         self.window        = window
         self.board         = board
         self.player        = player
-        self.updateCounter = 0
+        #self.updateCounter = 0
         self.inputDict     = {'up'   :False, 
                               'down' :False, 
                               'left' :False, 
@@ -63,12 +63,12 @@ class GameplayFrame(StackFrame):
         self.board.render(window)
 
     def update(self):
-        if not self.updateCounter:
-            self.board.update(self)
-            self.updateCounter += 1
-        else:
-            self.player.update(self)
-            self.updateCounter = (self.updateCounter+1)%GameplayFrame.updateMod
+        #if not self.updateCounter:
+        self.board.update(self)
+        #self.updateCounter += 1
+        #else:
+        #    self.player.update(self)
+        #    self.updateCounter = (self.updateCounter+1)%GameplayFrame.updateMod
 
 
 if __name__=='__main__':
@@ -81,11 +81,11 @@ if __name__=='__main__':
 
     for x in range(0,10):
         for y in range(0,10):
-            b.spaces[x][y] = Tile('media/rhombus.png', [])
+            b.spaces[x][y] = Tile('media/tileproto1.png', [])
 
     p = Player(None, None, None, None, None, 4)
     b.placeEntity(p, 3, 4)
-    b.placeEntity(Creature(None, None, None, None, None, 4), 5,5)
+    b.placeEntity(Creature(None, None, None, None, None, 10), 5,5)
 
     g = GameplayFrame(None, window, b, p)
     

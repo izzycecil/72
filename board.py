@@ -4,8 +4,8 @@ import pygame
 from   pygame.locals import *
 
 class Board(object):
-    tileWidth  = 40
-    tileHeight = 40
+    tileWidth  = 80
+    tileHeight = 80
 
     def __init__(self, dim):
         self.dim    = dim
@@ -68,12 +68,6 @@ class Entity(object):
         self.posX     = posX
         self.posY     = posY
         self.passable = passable
-
-    def interact(self, entity):
-        """
-        entity --- entity to be acted on
-        """
-        pass
 
     def getUp(self):
         return (-1 if self.posY % 2 == 0 else 0, -1)
@@ -180,6 +174,18 @@ class Creature(Entity):
             self.moveRight(board)
         else:
             print 'NOTHING HAPPENED!'
+            
+    def interact(self, board):
+        if self.direction = 'up':
+            dx,dy = self.getUp()
+        if self.direction = 'down':
+            dx,dy = self.getDown()
+        if self.direction = 'left':
+            dx,dy = self.getLeft()
+        if self.direction = 'right':
+            dx,dy = self.getRight()
+
+        itile = board.spaces
         
 
 class Player(Creature):
@@ -187,8 +193,6 @@ class Player(Creature):
         super(Player, self).__init__(health, strength, 
                                      posX, posY, direction, 
                                      speed)
-
-
         
     def render(self, window):
         ptransit       = (self.speed - self.transit) / float(self.speed)
