@@ -10,7 +10,9 @@ from menus      import gameMenuTree
 
 class GameplayFrame(StackFrame):
 
-    updateMod = 8
+    updateMod  = 8
+    camBoxTrim = 60
+    camSpeed   = 10
 
     def __init__(self, stack, window, board, player):
         super(GameplayFrame, self).__init__(stack, window)
@@ -24,7 +26,33 @@ class GameplayFrame(StackFrame):
                               'right':False,
                               'act'  :False,
                               'pause':False,}
+
+        self.buffer = pygame.Surface(
+            (board.xDim*Board.tileHeight+20, board.yDim*Board.tileHeight),
+            flags = SRCALPHA)
+
+        self.cameraX = 0
+        self.cameraY = 0
+        self.dxMin   = GameplayFrame.camBoxTrim
+        self.dyMin   = GameplayFrame.camBoxTrim
+        self.dxMax   = window.get_width() - GameplayFrame.camBoxTrim - 60
+        self.dyMax   = window.get_height() - GameplayFrame.camBoxTrim
         
+    def updateCam(self):
+        px, py = Board.getCoord(self.player.posX, self.player.posY)
+        dx = px + self.cameraX
+        dy = py + self.cameraY
+        
+        if dx < self.dxMin:
+            self.cameraX += GameplayFrame.camSpeed
+        elif dx > self.dxMax:
+            self.cameraX -= GameplayFrame.camSpeed
+
+        if dy < self.dyMin:
+            self.cameraY += GameplayFrame.camSpeed
+        elif dy > self.dyMax:
+            self.cameraY -= GameplayFrame.camSpeed
+
     def poll(self):
         super(GameplayFrame, self).poll()
     
@@ -72,10 +100,14 @@ class GameplayFrame(StackFrame):
                                             
         
     def render(self):
-        self.board.render(self.window)
+        self.board.render(self.buffer)
 
     def update(self):
         self.board.update(self)
+
+    def paint(self):
+        self.updateCam()
+        self.window.blit(self.buffer, (self.cameraX, self.cameraY))
 
 
 if __name__=='__main__':
@@ -84,10 +116,10 @@ if __name__=='__main__':
     window = pygame.display.set_mode((600,600))
     pygame.display.set_caption('72 --- gameTest')
 
-    b = Board((10,10))
+    b = Board((20,20))
 
-    for x in range(0,10):
-        for y in range(0,10):
+    for x in range(0,20):
+        for y in range(0,20):
             b.spaces[x][y] = Tile('media/tileproto1.png', [])
 
     p = Player(20, 10, None, None, None, 4)
