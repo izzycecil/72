@@ -17,8 +17,15 @@ class GameSprite(object):
         
         for f in glob.glob(path+subPath+"./*.png"):
             surfaces.append(pygame.image.load(f))
-            
-        return surfaces
+        
+        temp = surfaces
+        
+        if len(temp):
+            temp.pop()
+            temp.reverse()
+            temp.pop()
+        
+        return surfaces+temp
     
     def getFrames(self,  position='idle', direction=4):
         return self.frameDict[position+'_'+animationDirections[direction]]
