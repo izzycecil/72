@@ -12,16 +12,16 @@ class Animation(object):
         self.nextDirection = 4
         self.doingRect = self.doing[0].get_rect()
         self.currentFrame = 0
-        self.doNext = self.doing
+        self.next = self.doing
     
     #if this works only due to incedental desing of GameSprite
     def doNext(self, position, direction):
         self.nextDirection = direction
-        self.doNext = self.sprite.getFrames(position, direction)
+        self.next = self.sprite.getFrames(position, direction)
     
     def update(self):
         #check this
-        if self.doNext is not self.doing and self.currentFrame == 0:
+        if self.next is not self.doing and self.currentFrame == 0:
             self.doing = self.doNext
             self.doNext = self.sprite.getFrames('idle', self.nextDirection)
 
