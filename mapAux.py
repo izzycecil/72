@@ -5,21 +5,25 @@ def readInMap(filename):
 
     for line in open(filename):
         tmpLine = line.split(' ')
-        tileMap.update({tmpLine[0]:(Tile("media/tiles/"+(tmpLine[1].rstrip()), []))})
+        tileMap.update({tmpLine[0]:(Tile('media/tiles/'+(tmpLine[1].rstrip()), []))})
     
     return tileMap
 
 # no contents yet
 def readToArray(filename, tileMap):
-    acmList = [[]]
+    finalList = []
 
-    for line in open(filename):
-        acmList.append([])
+    for line in open(filename).readlines():
+        acmList = []
         for c in line.rstrip('\n'):
-            acmList[-1].append(tileMap[c])  
+            acmList.append(tileMap[c])
+        finalList.append(acmList)
+        # a poor way to ensuer that all the rows are the same length
+        if len(finalList[-1]) is not len(finalList[0]):
+            finalList.pop()
     
-    return acmList
+    return finalList
 
 def loadMap(filename):
-    tileMap = readInMap("media/tiles/dict")
+    tileMap = readInMap('media/tiles/dict')
     return readToArray(filename, tileMap)
