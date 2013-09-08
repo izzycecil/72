@@ -39,9 +39,8 @@ class DialogFrame(StackFrame):
         self.boxes = []
         
     def poll(self):
-        """ Poll with
-        for event in pygame.event.get()...
-        """
+        super(DialogFrame, self).poll()
+
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 xPos = event.pos[0] - self.promptPosition[0] # move these coordinates in to our canvas
