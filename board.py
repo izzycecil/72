@@ -258,7 +258,9 @@ class Player(Creature):
                 if isinstance(entity, Creature):
                     self.attack(entity, board)
                 if isinstance(entity, Clerk):
-                    stack.append(entity.conversation)
+                    clerkDialogManager = DialogManager(entity.conversation)
+                    stack.append(DialogFrame(stack, window, clerkDialogManager, playerImage='media/avatars/prot_shitty.png', npcImage='media/avatars/never_use.png'))
+
 class Enemy(Creature):
 
     def __init__(self, health, strength, posX, posY, direction, speed):
