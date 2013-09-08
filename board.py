@@ -15,7 +15,7 @@ class Board(object):
     def __init__(self, dim, filename=None):
         if filename is not None:
             self.load(filename)
-            returns
+            return
         self.dim    = dim
         self.xDim   = dim[0]
         self.yDim   = dim[1]
@@ -117,6 +117,15 @@ class Creature(RenderEntity):
         self.prevY     = self.posY
         self.transit   = 0
         self.interactTime = 0  
+        self.walk_sound   = []
+        self.attack_sound = ['media/enemy/fight1.wav',
+                             'media/enemy/fight2.wav',
+                             'media/enemy/fight3.wav']
+        
+        self.hurt_sound   = ['media/Hit\ Response/ouch1.wav',
+                             'media/Hit\ Response/ouch2.wav',
+                             'media/Hit\ Response/ouch3.wav',]
+
 
     def move(self, dx, dy, board):
         if self.transit == 0:
@@ -194,12 +203,17 @@ class Creature(RenderEntity):
         destX = self.posX + dx
         destY = self.posY + dy
 
+        r = random()
+
+        pygame.mixer.Sound(self.attack_sound[int(r*len(self.attack_sound))])
+        
         if destX in range(0, board.xDim) and destY in range(0,board.yDim):
             return board.spaces[destX][destY]
         else:
             return None
 
     def attack(self, creature, board):
+
         if hasattr(self, 'animation'):
             self.animation.doNext('punch', directionDict[self.direction])
     
@@ -209,6 +223,8 @@ class Creature(RenderEntity):
             creature.die(board)
 
     def die(self, board):
+        r = random()
+        pygame.mixer.Sound(self.hurt_sound[int(r*len(self.hurt_sound))])
         board.spaces[self.posX][self.posY].contents.remove(self)
         
 
@@ -242,59 +258,61 @@ class Player(Creature):
                 if isinstance(entity, Creature):
                     self.attack(entity, board)
                 if isinstance(entity, Clerk):
-                    stack.append(entity.conversation)
+                    clerkDialogManager = DialogManager(entity.conversation)
+                    stack.append(DialogFrame(stack, window, clerkDialogManager, playerImage='media/avatars/prot_shitty.png', npcImage='media/avatars/never_use.png'))
+
 class Enemy(Creature):
 
-        def __init__(self, health, strength, posX, posY, direction, speed):
-                super(Enemy, self).__init__(health, strength, posX, posY, direction, speed)
+    def __init__(self, health, strength, posX, posY, direction, speed):
+        super(Enemy, self).__init__(health, strength, posX, posY, direction, speed)
 
-        def update(self, gameFrame):
-                board  = gameFrame.board
-                player = gameFrame.player
-                
-                if self.transit > 0:
-                        self.transit -= 1
-
-                dx = self.posX - player.posX
-                dy = self.posY - player.posY
+    def update(self, gameFrame):
+        board  = gameFrame.board
+        player = gameFrame.player
         
-                if dx > 0 and dy >0:
-                        self.moveUp(board)
-                elif dx < 0 and dy < 0:
-                        self.moveDown(board)
-                elif dx > 0 and dy == 0:
-                        self.moveUp(board)
-                elif dy > 0 and dx == 0:
-                        self.moveRight(board)
-                elif dy < 0:
-                        self.moveLeft(board)
-                elif dx <0:
-                        self.moveRight(board)
-                else:
-                        print 'NOTHING HAPPENED!'
+        if self.transit > 0:
+            self.transit -= 1
+            
+        dx = self.posX - player.posX
+        dy = self.posY - player.posY
+        
+        if dx > 0 and dy >0:
+            self.moveUp(board)
+        elif dx < 0 and dy < 0:
+            self.moveDown(board)
+        elif dx > 0 and dy == 0:
+            self.moveUp(board)
+        elif dy > 0 and dx == 0:
+            self.moveRight(board)
+        elif dy < 0:
+            self.moveLeft(board)
+        elif dx <0:
+            self.moveRight(board)
+        else:
+            print 'NOTHING HAPPENED!'
                 
 
-        def interact(self, board):
-                if self.direction == 'up':
-                        dx,dy = self.getUp()
-                if self.direction == 'down':
-                        dx,dy = self.getDown()
-                if self.direction == 'left':
-                        dx,dy = self.getLeft()
-                if self.direction == 'right':
-                        dx,dy = self.getRight()
+    def interact(self, board):
+        if self.direction == 'up':
+            dx,dy = self.getUp()
+        if self.direction == 'down':
+            dx,dy = self.getDown()
+        if self.direction == 'left':
+            dx,dy = self.getLeft()
+        if self.direction == 'right':
+            dx,dy = self.getRight()
 
 class Clerk(Creature):
         
     def __init__(self, posX, posY, direction, conversation):
-                super(Clerk, self).__init__(400, 0, posX, posY, direction, 1)
-                self.conversation = conversation
+        super(Clerk, self).__init__(400, 0, posX, posY, direction, 1)
+        self.conversation = conversation
 
     def converse(self):
-                pass
-
+        pass
+                
     def update(self, board):
-                pass
+        pass
                 
         
 
