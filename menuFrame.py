@@ -6,14 +6,14 @@ from stackframe import StackFrame, runStack
 
 class Menu(StackFrame):
         
-    def __init__(self, stack, window, items, position=None, background=None, color=None, highlighting=None, music=None):
-        super(Menu, self).__init__(stack, window, music)
+    def __init__(self, stack, window, items, position=None, background=None, color=None, highlighting=None, renderOver=None, music=None):
+        super(Menu, self).__init__(stack, window, renderOver, music)
         if position is None:
             self.position = pygame.Rect((0, 0), (window.get_width(), window.get_height()))
         else:
             self.position = position
 
-        self.surface = pygame.Surface((self.position.width, self.position.height))
+        self.surface = pygame.Surface((self.position.width, self.position.height), pygame.SRCALPHA)
         self.items = items
         
         if background is not None:
@@ -31,7 +31,8 @@ class Menu(StackFrame):
                 xPos = event.pos[0]
                 yPos = event.pos[1]
                 for box in self.boxes:
-                    if xPos > box[0].left and xPos < box[0].right and yPos > box[0].top and yPos < box[0].bottom:
+                    if (xPos - self.position.x) > box[0].left and (xPos - self.position.x) < box[0].right and \
+                            (yPos - self.position.y) > box[0].top and (yPos - self.position.y) < box[0].bottom:
                         if isinstance(box[1], StackFrame):
                             self.stack.append(box[1])
                         elif box[1] is None:
@@ -69,7 +70,8 @@ class Menu(StackFrame):
             textPos = text.get_rect(centerx = self.surface.get_width() / 2, centery = subHeightStart + fontSize + fontSpace)
             if hasattr(self, 'highlighting'):
                 (xPos, yPos) = pygame.mouse.get_pos()
-                if xPos > textPos.left and xPos < textPos.right and yPos > textPos.top and yPos < textPos.bottom:
+                if (xPos - self.position.x) > textPos.left and (xPos - self.position.x) < textPos.right and \
+                        (yPos - self.position.y) > textPos.top and (yPos - self.position.y) < textPos.bottom:
                     text = font.render(item[0], 1, self.highlighting)
             self.boxes.append([textPos, item[1]])
             subHeightStart = subHeightStart + fontSize + fontSpace
@@ -81,10 +83,10 @@ class Menu(StackFrame):
         
 class MenuTree(Menu):
     
-    def __init__(self, stack, window, items, position=None, background=None, color=None, highlighting=None, music=None):
+    def __init__(self, stack, window, items, position=None, background=None, color=None, highlighting=None, renderOver=None, music=None):
         for item in items:
             if type(item[1]) is type([]):
                 item[1].append(["Return", None])
-                item[1] = MenuTree(stack, window, item[1], position, background, color, highlighting)
+                item[1] = MenuTree(stack, window, item[1], position, background, color, highlighting, renderOver)
         
-        super(MenuTree, self).__init__(stack, window, items, position, background, color, highlighting, music)
+        super(MenuTree, self).__init__(stack, window, items, position, background, color, highlighting, renderOver, music)
