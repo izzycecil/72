@@ -140,8 +140,8 @@ class Creature(Entity):
         x,y = self.getRight()
         self.direction = 'right'
         self.move(x,y,board)
-
-    def render(self, window):
+        
+    def getRealCoord(self):
         ptransit       = (self.speed - self.transit) / float(self.speed)
         splotx, sploty = Board.getCoord(self.prevX, self.prevY)
         eplotx, eploty = Board.getCoord(self.posX, self.posY)
@@ -151,6 +151,12 @@ class Creature(Entity):
         eploty += Board.tileHeight/2
         plotx = int(splotx + (eplotx - splotx) * ptransit)
         ploty = int(sploty + (eploty - sploty) * ptransit)
+
+        return plotx, ploty
+
+
+    def render(self, window):
+        plotx, ploty = self.getRealCoord()
         pygame.draw.circle(window, 
                            pygame.Color(0,255,0), 
                            (plotx, ploty), 
