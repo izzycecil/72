@@ -2,6 +2,12 @@ import pygame
 
 from   animationRender  import Animation
 
+"""
+this takes the board directions and converts them
+into the numerical directions used by the animations
+"""
+directionDict = {'up':, 'down':, 'left':, 'right':}
+
 class Entity(object):
 
     def __init__(self, posX, posY, passable):
@@ -30,16 +36,17 @@ class RenderEntity(Entity):
     def __init__(self, posX, posY, passable);
         super(RenderEntity, self).__init__(posX, posY, passable)
         
-    def enableRender(self):
-        pass
+    def enableRender(self, path='media/animations/player/', positions=['idle', 'punch', 'walk']):
+        self.animation = Animation(path, positions)
         
-    def render(self):
+    def render(self, (xPos, yPos)):
         pass
     
     def update(self):
-        pass
+        if hasattr(self, 'animation'):
+            self.animation.update()
         
-class Creature(RenderEntity):
+class RenderCreature(RenderEntity):
 
     def __init__(self, health, strength, posX, posY, direction, speed):
         super(Creature, self).__init__(posX, posY, False)
@@ -54,6 +61,8 @@ class Creature(RenderEntity):
 
     def move(self, dx, dy, board):
         if self.transit == 0:
+            
+        
             self.transit = self.speed
             self.prevX   = self.posX
             self.prevY   = self.posY
@@ -92,22 +101,29 @@ class Creature(RenderEntity):
         self.direction = 'right'
         self.move(x,y,board)
 
-    def render(self, window):
-        ptransit       = (self.speed - self.transit) / float(self.speed)
-        splotx, sploty = Board.getCoord(self.prevX, self.prevY)
-        eplotx, eploty = Board.getCoord(self.posX, self.posY)
-        splotx += Board.tileWidth/2
-        sploty += Board.tileHeight/2
-        eplotx += Board.tileWidth/2
-        eploty += Board.tileHeight/2
-        plotx = int(splotx + (eplotx - splotx) * ptransit)
-        ploty = int(sploty + (eploty - sploty) * ptransit)
-        pygame.draw.circle(window, 
-                           pygame.Color(0,255,0), 
-                           (plotx, ploty), 
-                           5)
+    """
+    my idea is to not implement this in any of the classes
+    this will let the RenderEntity base class handle all the rendering
+    NOTE: this need the raw coordinates to draw on the window
+    """ 
+    # def render(self, window):
+        # ptransit       = (self.speed - self.transit) / float(self.speed)
+        # splotx, sploty = Board.getCoord(self.prevX, self.prevY)
+        # eplotx, eploty = Board.getCoord(self.posX, self.posY)
+        # splotx += Board.tileWidth/2
+        # sploty += Board.tileHeight/2
+        # eplotx += Board.tileWidth/2
+        # eploty += Board.tileHeight/2
+        # plotx = int(splotx + (eplotx - splotx) * ptransit)
+        # ploty = int(sploty + (eploty - sploty) * ptransit)
+        # pygame.draw.circle(window, 
+                           # pygame.Color(0,255,0), 
+                           # (plotx, ploty), 
+                           # 5)
 
     def update(self, gameFrame):
+        super(Creature, self).update()
+    
         if self.transit > 0:
             self.transit -= 1
         if self.interactTime > 0:
