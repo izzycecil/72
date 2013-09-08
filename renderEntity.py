@@ -39,8 +39,9 @@ class RenderEntity(Entity):
     def enableRender(self, path='media/animations/player/', positions=['idle', 'punch', 'walk']):
         self.animation = Animation(path, positions)
         
-    def render(self, (xPos, yPos)):
-        pass
+    def render(self, buffer, (xPos, yPos)):
+        if hasattr(self, 'animation'):
+            self.animation.render(buffer,(xPos, yPos))
     
     def update(self):
         if hasattr(self, 'animation'):
@@ -101,25 +102,18 @@ class RenderCreature(RenderEntity):
         self.direction = 'right'
         self.move(x,y,board)
 
-    """
-    my idea is to not implement this in any of the classes
-    this will let the RenderEntity base class handle all the rendering
-    NOTE: this need the raw coordinates to draw on the window
-    """ 
-    # def render(self, window):
-        # ptransit       = (self.speed - self.transit) / float(self.speed)
-        # splotx, sploty = Board.getCoord(self.prevX, self.prevY)
-        # eplotx, eploty = Board.getCoord(self.posX, self.posY)
-        # splotx += Board.tileWidth/2
-        # sploty += Board.tileHeight/2
-        # eplotx += Board.tileWidth/2
-        # eploty += Board.tileHeight/2
-        # plotx = int(splotx + (eplotx - splotx) * ptransit)
-        # ploty = int(sploty + (eploty - sploty) * ptransit)
-        # pygame.draw.circle(window, 
-                           # pygame.Color(0,255,0), 
-                           # (plotx, ploty), 
-                           # 5)
+    def render(self, window):
+        ptransit       = (self.speed - self.transit) / float(self.speed)
+        splotx, sploty = Board.getCoord(self.prevX, self.prevY)
+        eplotx, eploty = Board.getCoord(self.posX, self.posY)
+        splotx += Board.tileWidth/2
+        sploty += Board.tileHeight/2
+        eplotx += Board.tileWidth/2
+        eploty += Board.tileHeight/2
+        plotx = int(splotx + (eplotx - splotx) * ptransit)
+        ploty = int(sploty + (eploty - sploty) * ptransit)
+        
+        super(RenderCreature, self).render(window, (plotx, ploty))
 
     def update(self, gameFrame):
         super(Creature, self).update()
