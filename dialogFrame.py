@@ -132,7 +132,7 @@ class DialogFrame(StackFrame):
             self.window.blit(self.playerImage, self.playerPosition)
 
     def update(self):
-        pass
+        super(DialogFrame, self).update()
 
 
 if __name__=='__main__':
