@@ -4,11 +4,11 @@ import pygame, sys
 from pygame.locals import *
 
 from stackframe     import StackFrame, runStack
-from board          import Board, Creature, Player, Tile
+from board          import Board, Tile, Enemy, Clerk, Creature, Player
 from gameplayFrame  import GameplayFrame
 from menuFrame      import MenuTree
 from menus          import gameMenuTree, mainMenuTree
-from animations     import GameSprite
+from animationRender    import Animation
 
 def initGraphics():
     pygame.init()
@@ -21,15 +21,18 @@ def initSound():
 
 def gameFrame(window, stack):
     # b = Board(None, filename='media/maps/test')
-    b = Board((10, 10))
     
-    for x in range(0,10):
-        for y in range(0,10):
-            b.spaces[x][y] = Tile('media/shittytesttile.png', [])
+    b = Board((20,20))
 
-    p = Player(None, None, None, None, None, 4)
+    for x in range(0,20):
+        for y in range(0,20):
+            b.spaces[x][y] = Tile('media/tileproto1.png', [])
+
+    p = Player(20, 10, None, None, None, 4)
+    p.makeRenderable(window)
     b.placeEntity(p, 3, 4)
-    
+    b.placeEntity(Clerk(20, 10, None, 'redneck'), 5,5)
+
     return GameplayFrame(stack, window, b, p)
     
 def main():
@@ -40,23 +43,46 @@ def main():
     window   = initGraphics()
     fpsClock = pygame.time.Clock()
     
-    # stack.append(mainMenuTree(stack, window, gameFrame(window, stack)));
-    
-    testThing = GameSprite('media/animations/player/')
-    testFrames = testThing.getFrames()
-    testRect = testFrames[0].get_rect()
-    counter = 0;
+    stack.append(mainMenuTree(stack, window, gameFrame(window, stack)));
     
     while True:
         window.fill(pygame.Color(255,255,255))
-        # if not runStack(stack):
-            # break
-        window.blit(testFrames[counter % len(testFrames)], testRect)
-        counter += 1
+        if not runStack(stack):
+            break
         pygame.display.update()
-        fpsClock.tick(5)
+        fpsClock.tick(30)
 
     return
 
 if __name__=='__main__':
     main()
+
+
+def main2():
+    stack  = []
+
+    initSound()
+    
+    window   = initGraphics()
+    fpsClock = pygame.time.Clock()
+    
+    # stack.append(mainMenuTree(stack, window, gameFrame(window, stack)));
+    
+    testAnim = Animation(window)
+    
+    while True:
+        window.fill(pygame.Color(255,255,255))
+        # if not runStack(stack):
+            # break
+        testAnim.update()
+        testAnim.render((300, 300))
+        testAnim.paint()
+        
+        pygame.display.update()
+        fpsClock.tick(30)
+
+    return
+
+    
+    
+    

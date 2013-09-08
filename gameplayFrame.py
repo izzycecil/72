@@ -95,13 +95,15 @@ class GameplayFrame(StackFrame):
                     self.inputDict['pause'] = False
                 if event.key in (K_SPACE,):
                     self.inputDict['act']   = False
-
-                                            
         
     def render(self):
         self.board.render(self.buffer)
 
     def update(self):
+        if self.inputDict['pause']:
+            self.inputDict['pause'] = False
+            self.stack.append(gameMenuTree(self.stack, self.window))
+    
         self.board.update(self)
 
     def paint(self):

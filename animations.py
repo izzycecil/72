@@ -2,10 +2,10 @@ import pygame, glob
 
 animationDirections = ['UP', 'BACKLEFT', 'LEFT', 'FRONTLEFT', 'FRONT', 'FRONTRIGHT', 'RIGHT', 'BACKRIGHT']
 
+#do not touch!!! (ask me why)
 class GameSprite(object):
-    
-    # path like media/mainimations/png/
-    def __init__(self, path, positions=['idle', 'punch', 'walk']):
+
+    def __init__(self, path, positions):
         self.frameDict = {}
     
         for pos in positions:
@@ -15,10 +15,12 @@ class GameSprite(object):
     def getImages(self, path, subPath):
         surfaces = []
         
-        for f in glob.glob(path+subPath+"./*.png"):
+        for f in glob.glob(path+subPath+"/*.png"):
+            # print f
             surfaces.append(pygame.image.load(f))
+            surfaces[-1].convert_alpha()
         
-        temp = surfaces
+        temp = list(surfaces)
         
         if len(temp):
             temp.pop()
@@ -27,5 +29,5 @@ class GameSprite(object):
         
         return surfaces+temp
     
-    def getFrames(self,  position='idle', direction=4):
+    def getFrames(self,  position, direction):
         return self.frameDict[position+'_'+animationDirections[direction]]

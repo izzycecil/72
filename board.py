@@ -1,11 +1,12 @@
 from random import random
 
 import pygame
-from   pygame.locals import *
-from   mapAux        import loadMap
-from   tile          import Tile
-from   dialogue      import DialogManager
-from   dialogFrame   import DialogFrame
+from   pygame.locals    import *
+from   mapAux           import loadMap
+from   tile             import Tile
+from   dialogue         import DialogManager
+from   dialogFrame      import DialogFrame
+# from   animationRender  import Animation
 
 class Board(object):
     tileWidth  = 80
@@ -14,7 +15,7 @@ class Board(object):
     def __init__(self, dim, filename=None):
         if filename is not None:
             self.load(filename)
-            return
+            returns
         self.dim    = dim
         self.xDim   = dim[0]
         self.yDim   = dim[1]
@@ -35,7 +36,7 @@ class Board(object):
                 if self.spaces[x][y]:
                     plotx, ploty = Board.getCoord(x,y)
                     self.spaces[x][y].render(window, (plotx, ploty))
-
+    
     def placeEntity(self, entity, x, y):
         if self.spaces[x][y]:
             entity.posX  = x
@@ -94,7 +95,6 @@ class Creature(Entity):
         self.prevY     = self.posY
         self.transit   = 0
         self.interactTime = 0  
-
 
     def move(self, dx, dy, board):
         if self.transit == 0:
@@ -190,7 +190,7 @@ class Player(Creature):
         super(Player, self).__init__(health, strength, 
                                      posX, posY, direction, 
                                      speed)
-        
+    
     def render(self, window):
         ptransit       = (self.speed - self.transit) / float(self.speed)
         splotx, sploty = Board.getCoord(self.prevX, self.prevY)
@@ -218,7 +218,6 @@ class Player(Creature):
             self.moveUp(gameFrame.board)
         elif inputs['down']:
             self.moveDown(gameFrame.board)
-        
         
         if inputs['act'] and self.interactTime == 0:
             self.interact(gameFrame.board, gameFrame.stack, gameFrame.window)
