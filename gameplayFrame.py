@@ -17,7 +17,6 @@ class GameplayFrame(StackFrame):
         self.window        = window
         self.board         = board
         self.player        = player
-        #self.updateCounter = 0
         self.inputDict     = {'up'   :False, 
                               'down' :False, 
                               'left' :False, 
@@ -70,12 +69,7 @@ class GameplayFrame(StackFrame):
         self.board.render(self.window)
 
     def update(self):
-        #if not self.updateCounter:
         self.board.update(self)
-        #self.updateCounter += 1
-        #else:
-        #    self.player.update(self)
-        #    self.updateCounter = (self.updateCounter+1)%GameplayFrame.updateMod
 
 
 if __name__=='__main__':
