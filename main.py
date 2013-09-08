@@ -22,7 +22,7 @@ def initSound():
 
 def gameFrame(window, stack):
     clerkDialogManager = DialogManager('redneck')
-    diag = DialogFrame(stack, window, clerkDialogManager, playerImage='media/avatars/prot_shitty.png', npcImage='media/avatars/never_use.png')
+    diag = DialogFrame(stack, window, clerkDialogManager, playerImage='media/avatars/protag.png', npcImage='media/avatars/notnigel.png')
     b = Board((20,20))
 
     for x in range(0,20):
@@ -30,6 +30,7 @@ def gameFrame(window, stack):
             b.spaces[x][y] = Tile('media/tiles/basic.png', [])
 
     p = Player(20, 10, None, None, None, 4)
+    p.enableRender()
     b.placeEntity(p, 3, 4)
     b.placeEntity(Clerk(20, 10, None, diag), 5,5)
 
